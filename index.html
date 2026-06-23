@@ -1,148 +1,229 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Calculator Login</title>
+<title>Ayesha Master Calculator</title>
 
 <style>
 body{
 margin:0;
-font-family:Arial;
-background:#0b1220;
-color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
 }
 
-.box{
+.container{
+display:flex;
+gap:20px;
+}
+
+/* CALCULATOR BOX */
+.calculator{
 background:#111827;
 padding:20px;
-border-radius:12px;
+border-radius:20px;
 text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.6);
 }
 
-input{
-width:240px;
-padding:10px;
-margin:5px;
+/* ✨ STYLISH AYESHA */
+.brand{
+font-size:30px;
+font-weight:900;
+letter-spacing:4px;
+background: linear-gradient(90deg,#ff4d6d,#ffb703,#8b5cf6,#00e5ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+0%{filter:drop-shadow(0 0 5px #ff4d6d);}
+100%{filter:drop-shadow(0 0 15px #00e5ff);}
+}
+
+.tag{
+color:#9ca3af;
+font-size:12px;
+margin-bottom:10px;
+}
+
+#display{
+width:260px;
+height:60px;
+font-size:24px;
+text-align:right;
+margin-bottom:10px;
 border:none;
-border-radius:8px;
+outline:none;
+padding:10px;
+border-radius:10px;
+background:#1f2937;
+color:white;
 }
 
 button{
-padding:10px;
-margin:5px;
+width:60px;
+height:60px;
+margin:4px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
+transition:0.2s;
 }
 
-#calc{display:none;}
+button:hover{transform:scale(1.05);}
+
+/* BUTTON COLORS */
+.num{background:#374151;color:white;}
+.op{background:#f59e0b;color:white;}
+.equal{background:#10b981;color:white;}
+.clear{background:#ef4444;color:white;width:125px;}
+.science{background:#6366f1;color:white;}
+.extra{background:#8b5cf6;color:white;}
+
+/* HISTORY */
+.history{
+background:#0b1220;
+padding:15px;
+border-radius:15px;
+width:170px;
+color:white;
+font-size:12px;
+height:300px;
+overflow:auto;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-
-<!-- LOGIN -->
-<div id="login">
-<h3>🔐 Calculator Login</h3>
-<p id="text">Set your password</p>
-
-<input type="password" id="pass" placeholder="Enter Password"><br>
-
-<button onclick="handle()">Continue</button>
-</div>
+<div class="container">
 
 <!-- CALCULATOR -->
-<div id="calc">
-<h3>💖 Calculator</h3>
+<div class="calculator">
 
-<input id="display" readonly><br>
+<div class="brand">AYESHA</div>
+<div class="tag">Master Scientific Calculator</div>
 
-<button onclick="append('1')">1</button>
-<button onclick="append('2')">2</button>
-<button onclick="append('3')">3</button>
-<button onclick="append('+')">+</button><br>
+<input type="text" id="display" readonly>
 
-<button onclick="append('4')">4</button>
-<button onclick="append('5')">5</button>
-<button onclick="append('6')">6</button>
-<button onclick="append('-')">-</button><br>
+<br>
 
-<button onclick="append('7')">7</button>
-<button onclick="append('8')">8</button>
-<button onclick="append('9')">9</button>
-<button onclick="append('*')">*</button><br>
+<!-- SCIENTIFIC -->
+<button class="science" onclick="append('Math.sin(')">sin</button>
+<button class="science" onclick="append('Math.cos(')">cos</button>
+<button class="science" onclick="append('Math.tan(')">tan</button>
 
-<button onclick="append('0')">0</button>
-<button onclick="calculate()">=</button>
-<button onclick="clearD()">C</button>
+<br>
 
-<br><br>
-<button onclick="logout()">Logout</button>
+<!-- EXTRA -->
+<button class="extra" onclick="append('(')">(</button>
+<button class="extra" onclick="append(')')">)</button>
+<button class="extra" onclick="square()">x²</button>
+<button class="extra" onclick="cube()">x³</button>
 
+<br>
+
+<!-- NUMBERS -->
+<button class="num" onclick="append('7')">7</button>
+<button class="num" onclick="append('8')">8</button>
+<button class="num" onclick="append('9')">9</button>
+<button class="op" onclick="append('/')">÷</button>
+
+<br>
+
+<button class="num" onclick="append('4')">4</button>
+<button class="num" onclick="append('5')">5</button>
+<button class="num" onclick="append('6')">6</button>
+<button class="op" onclick="append('*')">×</button>
+
+<br>
+
+<button class="num" onclick="append('1')">1</button>
+<button class="num" onclick="append('2')">2</button>
+<button class="num" onclick="append('3')">3</button>
+<button class="op" onclick="append('-')">-</button>
+
+<br>
+
+<button class="num" onclick="append('0')">0</button>
+<button class="num" onclick="append('.')">.</button>
+<button class="equal" onclick="calculate()">=</button>
+<button class="op" onclick="append('+')">+</button>
+
+<br>
+
+<button class="clear" onclick="clearDisplay()">C</button>
+<button class="clear" onclick="clearHistory()">Clear History</button>
+
+</div>
+
+<!-- HISTORY -->
+<div class="history">
+<h3>📜 History</h3>
+<div id="history"></div>
 </div>
 
 </div>
 
 <script>
 
-let saved = localStorage.getItem("password");
-
-/* check first time */
-if(saved){
-document.getElementById("text").innerText="Enter your password";
-}
-
-/* first time set OR login */
-function handle(){
-let p = document.getElementById("pass").value;
-
-if(!saved){
-localStorage.setItem("password", p);
-alert("Password Set Successfully!");
-showCalc();
-}else{
-if(p === saved){
-showCalc();
-}else{
-alert("Wrong Password");
-}
-}
-}
-
-/* calculator */
+/* INPUT */
 function append(v){
 document.getElementById("display").value += v;
 }
 
-function clearD(){
+function clearDisplay(){
 document.getElementById("display").value="";
 }
 
+/* CALC */
 function calculate(){
 try{
-document.getElementById("display").value =
-eval(document.getElementById("display").value);
+let exp = document.getElementById("display").value;
+let result = Function("return "+exp)();
+
+document.getElementById("display").value = result;
+
+/* HISTORY SAVE */
+let history = JSON.parse(localStorage.getItem("history") || "[]");
+history.push(exp + " = " + result);
+localStorage.setItem("history", JSON.stringify(history));
+
+document.getElementById("history").innerHTML =
+history.map(h => "<div>"+h+"</div>").join("");
+
 }catch{
-alert("Error");
+alert("Invalid Input");
 }
 }
 
-/* logout */
-function logout(){
-document.getElementById("login").style.display="block";
-document.getElementById("calc").style.display="none";
-document.getElementById("pass").value="";
+/* CLEAR HISTORY */
+function clearHistory(){
+localStorage.removeItem("history");
+document.getElementById("history").innerHTML="";
 }
 
-/* show calculator */
-function showCalc(){
-document.getElementById("login").style.display="none";
-document.getElementById("calc").style.display="block";
+/* LOAD HISTORY */
+window.onload = function(){
+let history = JSON.parse(localStorage.getItem("history") || "[]");
+document.getElementById("history").innerHTML =
+history.map(h => "<div>"+h+"</div>").join("");
+}
+
+/* POWER */
+function square(){
+let d=document.getElementById("display");
+d.value=Math.pow(eval(d.value||0),2);
+}
+
+function cube(){
+let d=document.getElementById("display");
+d.value=Math.pow(eval(d.value||0),3);
 }
 
 </script>
