@@ -20,7 +20,7 @@ background:#111827;
 padding:20px;
 border-radius:20px;
 text-align:center;
-width:430px;
+width:450px;
 max-height:95vh;
 overflow:auto;
 }
@@ -34,7 +34,7 @@ background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
 }
 
 input{
-width:350px;
+width:360px;
 height:50px;
 font-size:18px;
 margin:10px 0;
@@ -52,26 +52,24 @@ cursor:pointer;
 font-size:12px;
 }
 
-/* calculator buttons */
+/* calculator */
 .num{background:#374151;color:white;width:60px;height:45px;}
 .op{background:#f59e0b;color:white;width:60px;height:45px;}
 .eq{background:#10b981;color:white;width:120px;}
 .clear{background:#ef4444;color:white;width:120px;}
 
-/* formula */
+/* formulas */
 .formula{background:#8b5cf6;color:white;}
 
-/* sections */
-.section{
+/* history */
+.history{
 margin-top:10px;
-padding:8px;
 background:#0b1220;
+padding:10px;
 border-radius:10px;
-}
-
-h4{
-margin:5px 0;
-color:#00e5ff;
+height:120px;
+overflow:auto;
+text-align:left;
 font-size:13px;
 }
 </style>
@@ -83,14 +81,14 @@ font-size:13px;
 
 <div class="brand">AYESHA CALC PRO</div>
 
-<p>Calculator + Physics Formulas</p>
+<p>Calculator + Physics + History</p>
 
 <!-- DISPLAY -->
 <input id="display" placeholder="Type or use buttons">
 
 <br>
 
-<!-- BASIC CALCULATOR -->
+<!-- BASIC CALC -->
 <button class="num" onclick="add('7')">7</button>
 <button class="num" onclick="add('8')">8</button>
 <button class="num" onclick="add('9')">9</button>
@@ -120,60 +118,32 @@ font-size:13px;
 <br>
 
 <button class="clear" onclick="clearD()">Clear</button>
+<button class="clear" onclick="clearHistory()">Clear History</button>
 
-<!-- 1 MECHANICS -->
-<div class="section">
-<h4>Mechanics</h4>
-<button class="formula" onclick="set('v = u + a*t')">Velocity</button>
+<!-- FORMULAS -->
+<h4>⚛ Physics Formulas</h4>
+
 <button class="formula" onclick="set('F = m*a')">Force</button>
+<button class="formula" onclick="set('V = I*R')">Ohm</button>
 <button class="formula" onclick="set('p = m*v')">Momentum</button>
 <button class="formula" onclick="set('W = F*d')">Work</button>
-<button class="formula" onclick="set('P = W/t')">Power</button>
 <button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
-</div>
-
-<!-- 2 ELECTRICITY -->
-<div class="section">
-<h4>Electricity</h4>
-<button class="formula" onclick="set('V = I*R')">Ohm</button>
-<button class="formula" onclick="set('P = V*I')">Power</button>
-<button class="formula" onclick="set('R = R1 + R2')">Series</button>
-<button class="formula" onclick="set('1/R = 1/R1 + 1/R2')">Parallel</button>
-</div>
-
-<!-- 3 WAVES -->
-<div class="section">
-<h4>Waves</h4>
 <button class="formula" onclick="set('v = f*lambda')">Wave</button>
-<button class="formula" onclick="set('f = 1/T')">Frequency</button>
-</div>
 
-<!-- 4 OPTICS -->
-<div class="section">
-<h4>Optics</h4>
-<button class="formula" onclick="set('1/f = 1/v + 1/u')">Lens/Mirror</button>
-<button class="formula" onclick="set('m = v/u')">Magnification</button>
-</div>
-
-<!-- 5 MODERN -->
-<div class="section">
-<h4>Modern Physics</h4>
-<button class="formula" onclick="set('E = h*f')">Photon</button>
-<button class="formula" onclick="set('lambda = h/p')">de Broglie</button>
+<!-- HISTORY -->
+<div class="history" id="historyBox">
+<b>📜 History</b><br>
 </div>
 
 </div>
 
 <script>
 
+let history = JSON.parse(localStorage.getItem("history")) || [];
+
 /* ADD */
 function add(v){
 document.getElementById("display").value+=v;
-}
-
-/* CLEAR */
-function clearD(){
-document.getElementById("display").value="";
 }
 
 /* SET FORMULA */
@@ -181,19 +151,22 @@ function set(v){
 document.getElementById("display").value=v;
 }
 
-/* CALCULATE (FULL SAFE) */
+/* CLEAR */
+function clearD(){
+document.getElementById("display").value="";
+}
+
+/* CALCULATE */
 function calculate(){
 try{
 let text=document.getElementById("display").value;
 let clean=text.replace(/[a-zA-Z= ]/g,'');
 let result=Function("return "+clean)();
+
 document.getElementById("display").value=result;
-}catch{
-alert("Invalid Input ❌");
-}
-}
 
-</script>
+/* SAVE HISTORY */
+let record = text + " = " + result;
+history.unshift(record);
 
-</body>
-</html>
+localStorage.setItem("history",
