@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ayesha Master Calculator</title>
+<title>Ayesha Study Smart App</title>
 
 <style>
 body{
 margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-font-family:Arial;
+}
+
+/* SPLASH SCREEN */
+#splash{
+position:fixed;
+width:100%;
+height:100vh;
 background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
-}
-
-.container{
 display:flex;
-gap:20px;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:999;
 }
 
-/* CALCULATOR BOX */
-.calculator{
-background:#111827;
-padding:20px;
-border-radius:20px;
-text-align:center;
-box-shadow:0 15px 40px rgba(0,0,0,0.6);
-}
-
-/* ✨ STYLISH AYESHA */
-.brand{
-font-size:30px;
+.logo{
+font-size:45px;
 font-weight:900;
-letter-spacing:4px;
-background: linear-gradient(90deg,#ff4d6d,#ffb703,#8b5cf6,#00e5ff);
+background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 animation: glow 2s infinite alternate;
@@ -42,191 +39,139 @@ animation: glow 2s infinite alternate;
 
 @keyframes glow{
 0%{filter:drop-shadow(0 0 5px #ff4d6d);}
-100%{filter:drop-shadow(0 0 15px #00e5ff);}
+100%{filter:drop-shadow(0 0 20px #00e5ff);}
 }
 
-.tag{
-color:#9ca3af;
-font-size:12px;
-margin-bottom:10px;
+/* MAIN APP */
+.box{
+background:#111827;
+padding:20px;
+border-radius:20px;
+text-align:center;
+width:340px;
+display:none;
 }
 
-#display{
-width:260px;
-height:60px;
-font-size:24px;
-text-align:right;
-margin-bottom:10px;
+.brand{
+font-size:28px;
+font-weight:bold;
+background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+input{
+width:280px;
+height:50px;
+font-size:18px;
+margin:10px 0;
 border:none;
-outline:none;
-padding:10px;
 border-radius:10px;
-background:#1f2937;
-color:white;
+padding:10px;
 }
 
 button{
-width:60px;
-height:60px;
+padding:10px;
 margin:4px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
-transition:0.2s;
 }
 
-button:hover{transform:scale(1.05);}
+.solve{background:#10b981;color:white;}
+.ex{background:#8b5cf6;color:white;}
 
-/* BUTTON COLORS */
-.num{background:#374151;color:white;}
-.op{background:#f59e0b;color:white;}
-.equal{background:#10b981;color:white;}
-.clear{background:#ef4444;color:white;width:125px;}
-.science{background:#6366f1;color:white;}
-.extra{background:#8b5cf6;color:white;}
-
-/* HISTORY */
-.history{
-background:#0b1220;
-padding:15px;
-border-radius:15px;
-width:170px;
-color:white;
-font-size:12px;
-height:300px;
-overflow:auto;
-}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- SPLASH -->
+<div id="splash">
+  <h1 class="logo">AYESHA</h1>
+  <p>Study Smart App</p>
+</div>
 
-<!-- CALCULATOR -->
-<div class="calculator">
+<!-- APP -->
+<div class="box" id="app">
 
 <div class="brand">AYESHA</div>
-<div class="tag">Master Scientific Calculator</div>
+<p>Study Smart Solver</p>
 
-<input type="text" id="display" readonly>
-
-<br>
-
-<!-- SCIENTIFIC -->
-<button class="science" onclick="append('Math.sin(')">sin</button>
-<button class="science" onclick="append('Math.cos(')">cos</button>
-<button class="science" onclick="append('Math.tan(')">tan</button>
+<!-- INPUT -->
+<input id="input" placeholder="Type: v = 20 / 5 or F = 10 * 5">
 
 <br>
 
-<!-- EXTRA -->
-<button class="extra" onclick="append('(')">(</button>
-<button class="extra" onclick="append(')')">)</button>
-<button class="extra" onclick="square()">x²</button>
-<button class="extra" onclick="cube()">x³</button>
+<!-- QUICK EXAMPLES -->
+<button class="ex" onclick="setText('v = 20 / 5')">Speed</button>
+<button class="ex" onclick="setText('F = 10 * 5')">Force</button>
+<button class="ex" onclick="setText('V = 2 * 3')">Ohm</button>
 
 <br>
 
-<!-- NUMBERS -->
-<button class="num" onclick="append('7')">7</button>
-<button class="num" onclick="append('8')">8</button>
-<button class="num" onclick="append('9')">9</button>
-<button class="op" onclick="append('/')">÷</button>
+<button class="solve" onclick="solve()">Solve</button>
 
-<br>
-
-<button class="num" onclick="append('4')">4</button>
-<button class="num" onclick="append('5')">5</button>
-<button class="num" onclick="append('6')">6</button>
-<button class="op" onclick="append('*')">×</button>
-
-<br>
-
-<button class="num" onclick="append('1')">1</button>
-<button class="num" onclick="append('2')">2</button>
-<button class="num" onclick="append('3')">3</button>
-<button class="op" onclick="append('-')">-</button>
-
-<br>
-
-<button class="num" onclick="append('0')">0</button>
-<button class="num" onclick="append('.')">.</button>
-<button class="equal" onclick="calculate()">=</button>
-<button class="op" onclick="append('+')">+</button>
-
-<br>
-
-<button class="clear" onclick="clearDisplay()">C</button>
-<button class="clear" onclick="clearHistory()">Clear History</button>
-
-</div>
-
-<!-- HISTORY -->
-<div class="history">
-<h3>📜 History</h3>
-<div id="history"></div>
-</div>
+<p id="result" style="margin-top:10px;font-weight:bold;"></p>
 
 </div>
 
 <script>
 
-/* INPUT */
-function append(v){
-document.getElementById("display").value += v;
+/* SPLASH CONTROL */
+window.onload=function(){
+setTimeout(()=>{
+document.getElementById("splash").style.display="none";
+document.getElementById("app").style.display="block";
+},2000);
 }
 
-function clearDisplay(){
-document.getElementById("display").value="";
+/* SET EXAMPLES */
+function setText(v){
+document.getElementById("input").value=v;
 }
 
-/* CALC */
-function calculate(){
+/* SOLVER */
+function solve(){
+let text=document.getElementById("input").value;
+
+/* SPEED */
+if(text.includes("v") && text.includes("/")){
+let nums=text.match(/\d+/g);
+if(nums.length>=2){
+let result=nums[0]/nums[1];
+show("Speed = "+nums[0]+" ÷ "+nums[1]+" = "+result+" m/s");
+}
+}
+
+/* FORCE */
+else if(text.includes("F") || text.includes("*")){
+let nums=text.match(/\d+/g);
+if(nums.length>=2){
+let result=nums[0]*nums[1];
+show("Force = "+nums[0]+" × "+nums[1]+" = "+result+" N");
+}
+}
+
+/* GENERAL */
+else{
 try{
-let exp = document.getElementById("display").value;
-let result = Function("return "+exp)();
-
-document.getElementById("display").value = result;
-
-/* HISTORY SAVE */
-let history = JSON.parse(localStorage.getItem("history") || "[]");
-history.push(exp + " = " + result);
-localStorage.setItem("history", JSON.stringify(history));
-
-document.getElementById("history").innerHTML =
-history.map(h => "<div>"+h+"</div>").join("");
-
+let clean=text.replace(/[a-zA-Z= ]/g,"");
+let result=Function("return "+clean)();
+show("Answer = "+result);
 }catch{
-alert("Invalid Input");
+show("Invalid Input ❌");
 }
 }
-
-/* CLEAR HISTORY */
-function clearHistory(){
-localStorage.removeItem("history");
-document.getElementById("history").innerHTML="";
 }
 
-/* LOAD HISTORY */
-window.onload = function(){
-let history = JSON.parse(localStorage.getItem("history") || "[]");
-document.getElementById("history").innerHTML =
-history.map(h => "<div>"+h+"</div>").join("");
-}
-
-/* POWER */
-function square(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),2);
-}
-
-function cube(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),3);
+/* SHOW RESULT */
+function show(r){
+document.getElementById("result").innerText=r;
 }
 
 </script>
 
 </body>
 </html>
+
