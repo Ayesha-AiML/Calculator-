@@ -41,6 +41,7 @@ margin:10px 0;
 border:none;
 border-radius:10px;
 padding:10px;
+text-align:right;
 }
 
 button{
@@ -52,7 +53,7 @@ cursor:pointer;
 font-size:11px;
 }
 
-/* calculator */
+/* calculator buttons */
 .num{background:#374151;color:white;width:55px;height:45px;}
 .op{background:#f59e0b;color:white;width:55px;height:45px;}
 .eq{background:#10b981;color:white;width:110px;}
@@ -61,9 +62,8 @@ font-size:11px;
 /* features */
 .formula{background:#8b5cf6;color:white;}
 .unit{background:#22c55e;color:white;}
-.remove{background:#ef4444;color:white;}
-.share{background:#3b82f6;color:white;}
 .challenge{background:#f43f5e;color:white;}
+.remove{background:#ef4444;color:white;}
 
 /* history */
 .history{
@@ -83,7 +83,7 @@ font-size:12px;
 
 <div class="box">
 
-<!-- ⭐ AYESHA TITLE -->
+<!-- ✨ AYESHA -->
 <div class="brand">✨ AYESHA ✨</div>
 <p>Physics Master Calculator App</p>
 
@@ -121,9 +121,10 @@ font-size:12px;
 
 <br>
 
-<button class="clear" onclick="clearD()">Clear</button>
-<button class="clear" onclick="clearHistory()">History Clear</button>
-<button class="share" onclick="share()">Share</button>
+<!-- ⌨️ KEYBOARD STYLE CONTROLS -->
+<button class="clear" onclick="clearD()">AC</button>
+<button class="remove" onclick="backspace()">⌫ Remove</button>
+<button class="clear" onclick="clearHistory()">History</button>
 
 <!-- ⚛ MECHANICS -->
 <h4>Mechanics</h4>
@@ -131,29 +132,29 @@ font-size:12px;
 <button class="formula" onclick="set('F = m*a')">Force</button>
 <button class="formula" onclick="set('p = m*v')">Momentum</button>
 <button class="formula" onclick="set('W = F*d')">Work</button>
-<button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
-<button class="remove" onclick="this.remove()">❌</button>
+<button class="formula" onclick="set('KE = 1/2 m v²')">Energy</button>
+<button class="formula" onclick="set('PE = m*g*h')">Potential</button>
 
 <!-- ⚡ ELECTRICITY -->
 <h4>Electricity</h4>
-<button class="formula" onclick="set('V = I*R')">Ohm Law</button>
+<button class="formula" onclick="set('V = I*R')">Ohm</button>
 <button class="formula" onclick="set('P = V*I')">Power</button>
 <button class="formula" onclick="set('Q = I*t')">Charge</button>
-<button class="formula" onclick="set('F = k*q1*q2/r*r')">Coulomb</button>
-<button class="remove" onclick="this.remove()">❌</button>
+<button class="formula" onclick="set('F = k*q1*q2/r²')">Coulomb</button>
 
 <!-- 🌊 WAVES -->
 <h4>Waves</h4>
-<button class="formula" onclick="set('v = f*lambda')">Wave</button>
+<button class="formula" onclick="set('v = f*λ')">Wave Speed</button>
 <button class="formula" onclick="set('f = 1/T')">Frequency</button>
 
 <!-- 📏 UNITS -->
 <h4>Units</h4>
-<button class="unit" onclick="set('1 km = 1000 m')">KM</button>
-<button class="unit" onclick="set('1 m = 100 cm')">M</button>
-<button class="unit" onclick="set('1 kg = 1000 g')">KG</button>
+<button class="unit" onclick="set('1 km = 1000 m')">Km</button>
+<button class="unit" onclick="set('1 m = 100 cm')">m</button>
+<button class="unit" onclick="set('1 kg = 1000 g')">kg</button>
+<button class="unit" onclick="set('1 N = kg m/s²')">Force Unit</button>
 
-<!-- 🎯 DAILY CHALLENGE -->
+<!-- 🎯 CHALLENGE -->
 <h4>Daily Challenge</h4>
 <button class="challenge" onclick="challenge()">New Challenge</button>
 <div id="challengeBox"></div>
@@ -169,29 +170,35 @@ font-size:12px;
 
 let history = JSON.parse(localStorage.getItem("history")) || [];
 
+/* ADD */
 function add(v){
 document.getElementById("display").value += v;
 }
 
+/* SET */
 function set(v){
 document.getElementById("display").value = v;
 }
 
+/* CLEAR */
 function clearD(){
 document.getElementById("display").value = "";
 }
 
+/* ⌫ REMOVE (BACKSPACE KEY FUNCTION) */
+function backspace(){
+let val = document.getElementById("display").value;
+document.getElementById("display").value = val.slice(0,-1);
+}
+
+/* SOLVE */
 function solve(){
 try{
 let text = document.getElementById("display").value;
-let clean = text.replace(/[a-zA-Z= ]/g,'');
+let clean = text.replace(/[a-zA-Z=²√πλ ]/g,'');
 let result = Function("return "+clean)();
 
 document.getElementById("display").value = result;
-
-/* step by step */
-document.getElementById("challengeBox").innerHTML =
-"Step 1: " + text + "<br>Step 2: Solve<br>Answer: " + result;
 
 /* history */
 history.unshift(text + " = " + result);
@@ -199,10 +206,11 @@ localStorage.setItem("history", JSON.stringify(history));
 showHistory();
 
 }catch{
-alert("Invalid ❌");
+alert("Invalid Input ❌");
 }
 }
 
+/* HISTORY */
 function showHistory(){
 let box = document.getElementById("historyBox");
 box.innerHTML = "<b>History</b><br>";
@@ -211,26 +219,31 @@ box.innerHTML += "<div>"+h+"</div>";
 });
 }
 
+/* CLEAR HISTORY */
 function clearHistory(){
 history = [];
 localStorage.removeItem("history");
 showHistory();
 }
 
-function share(){
-let text = document.getElementById("display").value;
-navigator.share?.({
-title:"Ayesha Physics App",
-text:"I solved: " + text + " using Ayesha App ⚡"
-});
-}
-
+/* CHALLENGE */
 function challenge(){
-let q = "Find force: m=2kg, a=3m/s²";
 document.getElementById("challengeBox").innerHTML =
-"Q: " + q + "<br>Answer: 6 N";
+"Q: Find force if m=2kg, a=3m/s²<br>" +
+"<input id='ans' placeholder='Answer'>" +
+"<button onclick='check()'>Submit</button>";
 }
 
+function check(){
+let a = document.getElementById("ans").value;
+if(a == "6"){
+alert("Correct 🎉 + Badge Earned 🏆");
+}else{
+alert("Try Again ❌");
+}
+}
+
+/* LOAD */
 window.onload = showHistory;
 
 </script>
