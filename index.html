@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ayesha Smart Calculator</title>
+<title>Physics Formula Calculator</title>
 
 <style>
 body{
 margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
 }
 
 .box{
@@ -20,7 +20,9 @@ background:#111827;
 padding:20px;
 border-radius:20px;
 text-align:center;
-width:400px;
+width:420px;
+max-height:90vh;
+overflow:auto;
 }
 
 .brand{
@@ -32,7 +34,7 @@ background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
 }
 
 input{
-width:330px;
+width:340px;
 height:50px;
 font-size:18px;
 margin:10px 0;
@@ -42,29 +44,29 @@ padding:10px;
 }
 
 button{
-padding:10px;
-margin:4px;
+padding:8px;
+margin:3px;
 border:none;
-border-radius:8px;
+border-radius:6px;
 cursor:pointer;
+font-size:12px;
 }
 
-/* buttons */
-.num{background:#374151;color:white;width:60px;height:50px;}
-.op{background:#f59e0b;color:white;width:60px;height:50px;}
-.calc{background:#10b981;color:white;width:130px;}
-.clear{background:#ef4444;color:white;width:130px;}
+.solve{background:#10b981;color:white;width:120px;}
+.clear{background:#ef4444;color:white;width:120px;}
 .formula{background:#8b5cf6;color:white;}
 
-/* history */
-.history{
+/* sections */
+.section{
 margin-top:10px;
+padding:8px;
 background:#0b1220;
-padding:10px;
 border-radius:10px;
-height:120px;
-overflow:auto;
-text-align:left;
+}
+
+h4{
+margin:5px 0;
+color:#00e5ff;
 font-size:14px;
 }
 </style>
@@ -74,120 +76,104 @@ font-size:14px;
 
 <div class="box">
 
-<div class="brand">AYESHA</div>
-<p>Smart Calculator + History</p>
+<div class="brand">PHYSICS CALC</div>
+
+<p>All Physics Formulas in One App</p>
 
 <!-- INPUT -->
-<input id="display" placeholder="Type calculation">
+<input id="display" placeholder="Type or select formula">
 
 <br>
 
-<!-- NORMAL CALCULATOR -->
-<button class="num" onclick="add('7')">7</button>
-<button class="num" onclick="add('8')">8</button>
-<button class="num" onclick="add('9')">9</button>
-<button class="op" onclick="add('/')">÷</button>
-
-<br>
-
-<button class="num" onclick="add('4')">4</button>
-<button class="num" onclick="add('5')">5</button>
-<button class="num" onclick="add('6')">6</button>
-<button class="op" onclick="add('*')">×</button>
-
-<br>
-
-<button class="num" onclick="add('1')">1</button>
-<button class="num" onclick="add('2')">2</button>
-<button class="num" onclick="add('3')">3</button>
-<button class="op" onclick="add('-')">-</button>
-
-<br>
-
-<button class="num" onclick="add('0')">0</button>
-<button class="num" onclick="add('.')">.</button>
-<button class="calc" onclick="calculate()">= Solve</button>
-<button class="op" onclick="add('+')">+</button>
-
-<br>
-
+<button class="solve" onclick="solve()">Solve</button>
 <button class="clear" onclick="clearD()">Clear</button>
-<button class="clear" onclick="clearHistory()">Clear History</button>
 
-<br><br>
-
-<!-- FORMULAS -->
+<!-- 1. MECHANICS -->
+<div class="section">
+<h4>1. Mechanics</h4>
+<button class="formula" onclick="set('v = u + a*t')">Kinematics</button>
 <button class="formula" onclick="set('F = m*a')">Force</button>
-<button class="formula" onclick="set('V = I*R')">Ohm</button>
 <button class="formula" onclick="set('p = m*v')">Momentum</button>
-<button class="formula" onclick="set('PE = m*g*h')">Energy</button>
+<button class="formula" onclick="set('W = F*d')">Work</button>
+<button class="formula" onclick="set('P = W/t')">Power</button>
+<button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
+<button class="formula" onclick="set('Fc = m*v*v/r')">Circular</button>
+</div>
 
-<!-- HISTORY -->
-<div class="history" id="historyBox">
-<b>📜 History</b><br>
+<!-- 2. ELECTRICITY -->
+<div class="section">
+<h4>2. Electricity</h4>
+<button class="formula" onclick="set('V = I*R')">Ohm</button>
+<button class="formula" onclick="set('P = V*I')">Power</button>
+<button class="formula" onclick="set('R = R1 + R2')">Series</button>
+<button class="formula" onclick="set('1/R = 1/R1 + 1/R2')">Parallel</button>
+<button class="formula" onclick="set('F = k*q1*q2/r*r')">Coulomb</button>
+<button class="formula" onclick="set('E = F/q')">Electric Field</button>
+</div>
+
+<!-- 3. WAVES -->
+<div class="section">
+<h4>3. Waves & SHM</h4>
+<button class="formula" onclick="set('v = f*lambda')">Wave Speed</button>
+<button class="formula" onclick="set('f = 1/T')">Frequency</button>
+<button class="formula" onclick="set('T = 1/f')">Time Period</button>
+<button class="formula" onclick="set('a = -omega*omega*x')">SHM</button>
+</div>
+
+<!-- 4. OPTICS -->
+<div class="section">
+<h4>4. Optics</h4>
+<button class="formula" onclick="set('1/f = 1/v + 1/u')">Mirror</button>
+<button class="formula" onclick="set('1/f = 1/v + 1/u')">Lens</button>
+<button class="formula" onclick="set('m = v/u')">Magnification</button>
+</div>
+
+<!-- 5. THERMODYNAMICS -->
+<div class="section">
+<h4>5. Thermodynamics</h4>
+<button class="formula" onclick="set('Q = m*c*deltaT')">Heat</button>
+<button class="formula" onclick="set('W = P*V')">Work Gas</button>
+</div>
+
+<!-- 6. GRAVITATION -->
+<div class="section">
+<h4>6. Gravitation</h4>
+<button class="formula" onclick="set('F = G*m1*m2/r*r')">Gravity</button>
+<button class="formula" onclick="set('g = G*M/r*r')">g value</button>
+</div>
+
+<!-- 7. MODERN PHYSICS -->
+<div class="section">
+<h4>7. Modern Physics</h4>
+<button class="formula" onclick="set('E = h*f')">Photon</button>
+<button class="formula" onclick="set('E = h*f - work')">Photoelectric</button>
+<button class="formula" onclick="set('lambda = h/p')">de Broglie</button>
 </div>
 
 </div>
 
 <script>
 
-let history = JSON.parse(localStorage.getItem("history")) || [];
-
-/* ADD INPUT */
-function add(v){
-document.getElementById("display").value += v;
-}
-
-/* SET FORMULA */
+/* SET */
 function set(v){
-document.getElementById("display").value = v;
+document.getElementById("display").value=v;
 }
 
-/* CLEAR DISPLAY */
+/* CLEAR */
 function clearD(){
 document.getElementById("display").value="";
 }
 
-/* CALCULATE */
-function calculate(){
+/* SOLVE BASIC MATH */
+function solve(){
 try{
 let text=document.getElementById("display").value;
-
-let result=Function("return "+text)();
+let clean=text.replace(/[a-zA-Z= ]/g,'');
+let result=Function("return "+clean)();
 document.getElementById("display").value=result;
-
-/* SAVE HISTORY */
-let record = text + " = " + result;
-history.unshift(record); // latest on top
-
-localStorage.setItem("history", JSON.stringify(history));
-showHistory();
-
 }catch{
 alert("Invalid Input ❌");
 }
-}
-
-/* SHOW HISTORY */
-function showHistory(){
-let box=document.getElementById("historyBox");
-box.innerHTML="<b>📜 History</b><br>";
-
-history.forEach(h=>{
-box.innerHTML += "<div>"+h+"</div>";
-});
-}
-
-/* CLEAR HISTORY */
-function clearHistory(){
-history=[];
-localStorage.removeItem("history");
-showHistory();
-}
-
-/* LOAD ON START */
-window.onload=function(){
-showHistory();
 }
 
 </script>
