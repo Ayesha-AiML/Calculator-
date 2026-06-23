@@ -70,7 +70,6 @@ background:white;
 color:#ff4d6d;
 font-size:22px;
 font-weight:bold;
-margin-bottom:5px;
 }
 
 .tag{
@@ -104,14 +103,11 @@ height:60px;
 margin:4px;
 border:none;
 border-radius:10px;
-font-size:14px;
 cursor:pointer;
 transition:0.2s;
 }
 
-button:hover{
-transform:scale(1.05);
-}
+button:hover{transform:scale(1.05);}
 
 .num{background:#374151;color:white;}
 .op{background:#f59e0b;color:white;}
@@ -119,6 +115,7 @@ transform:scale(1.05);
 .clear{background:#ef4444;color:white;width:125px;}
 .science{background:#6366f1;color:white;}
 .mode{background:#3b82f6;color:white;width:125px;}
+.extra{background:#8b5cf6;color:white;}
 
 .history{
 background:#0b1220;
@@ -163,6 +160,16 @@ overflow:auto;
 
 <br>
 
+<!-- EXTRA FEATURES -->
+<button class="extra" onclick="append('(')">(</button>
+<button class="extra" onclick="append(')')">)</button>
+<button class="extra" onclick="percent()">%</button>
+<button class="extra" onclick="square()">x²</button>
+<button class="extra" onclick="power()">xʸ</button>
+<button class="extra" onclick="backspace()">⌫</button>
+
+<br>
+
 <button class="num" onclick="append('7')">7</button>
 <button class="num" onclick="append('8')">8</button>
 <button class="num" onclick="append('9')">9</button>
@@ -193,6 +200,7 @@ overflow:auto;
 
 <button class="clear" onclick="clearDisplay()">C</button>
 <button class="mode" onclick="toggleMode()">🌙 Mode</button>
+<button class="clear" onclick="clearHistory()">Clear History</button>
 
 </div>
 
@@ -208,15 +216,13 @@ overflow:auto;
 
 let PASSWORD = "Ayesha123";
 
-/* LOCK */
+/* LOGIN */
 function checkPass(){
 let p = document.getElementById("pass").value;
 if(p === PASSWORD){
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="flex";
-}else{
-alert("Wrong Password");
-}
+}else alert("Wrong Password");
 }
 
 /* INPUT */
@@ -224,12 +230,33 @@ function append(v){
 document.getElementById("display").value += v;
 }
 
+/* BACKSPACE */
+function backspace(){
+let d = document.getElementById("display");
+d.value = d.value.slice(0,-1);
+}
+
 /* CLEAR */
 function clearDisplay(){
 document.getElementById("display").value="";
 }
 
+/* PERCENT */
+function percent(){
+let d = document.getElementById("display");
+d.value = eval(d.value)/100;
+}
 
+/* SQUARE */
+function square(){
+let d = document.getElementById("display");
+d.value = Math.pow(eval(d.value),2);
+}
+
+/* POWER */
+function power(){
+document.getElementById("display").value += "**";
+}
 
 /* CALCULATE */
 function calculate(){
@@ -239,7 +266,7 @@ let result = eval(exp);
 
 document.getElementById("display").value = result;
 
-/* HISTORY SAVE */
+/* HISTORY */
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 history.push(exp + " = " + result);
 localStorage.setItem("history", JSON.stringify(history));
@@ -247,10 +274,15 @@ localStorage.setItem("history", JSON.stringify(history));
 document.getElementById("history").innerHTML =
 history.map(h => "<div>"+h+"</div>").join("");
 
-
 }catch{
 alert("Invalid Input");
 }
+}
+
+/* CLEAR HISTORY */
+function clearHistory(){
+localStorage.removeItem("history");
+document.getElementById("history").innerHTML="";
 }
 
 /* LOAD HISTORY */
@@ -260,7 +292,7 @@ document.getElementById("history").innerHTML =
 history.map(h => "<div>"+h+"</div>").join("");
 }
 
-/* MODE TOGGLE */
+/* MODE */
 function toggleMode(){
 document.body.classList.toggle("light");
 }
