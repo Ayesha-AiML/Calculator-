@@ -229,15 +229,7 @@ function clearDisplay(){
 document.getElementById("display").value="";
 }
 
-/* VOICE (ONLY RESULT) */
-function speak(text){
-let msg = new SpeechSynthesisUtterance(String(text));
-msg.lang = "en-US";
-msg.rate = 1;
-msg.pitch = 1;
-speechSynthesis.cancel();
-speechSynthesis.speak(msg);
-}
+
 
 /* CALCULATE */
 function calculate(){
@@ -255,8 +247,6 @@ localStorage.setItem("history", JSON.stringify(history));
 document.getElementById("history").innerHTML =
 history.map(h => "<div>"+h+"</div>").join("");
 
-/* VOICE ONLY RESULT */
-speak(result);
 
 }catch{
 alert("Invalid Input");
