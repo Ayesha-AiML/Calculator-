@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Physics Calculator Pro</title>
+<title>Physics Pro Learning App</title>
 
 <style>
 body{
@@ -20,7 +20,7 @@ background:#111827;
 padding:15px;
 border-radius:20px;
 text-align:center;
-width:460px;
+width:470px;
 max-height:95vh;
 overflow:auto;
 }
@@ -34,10 +34,10 @@ background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
 }
 
 input{
-width:370px;
+width:380px;
 height:50px;
-font-size:18px;
-margin:10px 0;
+font-size:16px;
+margin:8px 0;
 border:none;
 border-radius:10px;
 padding:10px;
@@ -52,11 +52,27 @@ cursor:pointer;
 font-size:11px;
 }
 
+/* calculator */
 .num{background:#374151;color:white;width:55px;height:45px;}
 .op{background:#f59e0b;color:white;width:55px;height:45px;}
 .eq{background:#10b981;color:white;width:110px;}
 .clear{background:#ef4444;color:white;width:110px;}
+
+/* features */
 .formula{background:#8b5cf6;color:white;}
+.share{background:#3b82f6;color:white;}
+.challenge{background:#f43f5e;color:white;}
+.unit{background:#22c55e;color:white;}
+
+/* sections */
+.section{
+margin-top:8px;
+padding:8px;
+background:#0b1220;
+border-radius:10px;
+}
+
+h4{margin:5px;color:#00e5ff;font-size:13px;}
 
 /* history */
 .history{
@@ -64,12 +80,11 @@ margin-top:10px;
 background:#0b1220;
 padding:10px;
 border-radius:10px;
-height:130px;
+height:120px;
 overflow:auto;
 text-align:left;
-font-size:13px;
+font-size:12px;
 }
-h4{margin:5px;color:#00e5ff;}
 </style>
 </head>
 
@@ -79,10 +94,10 @@ h4{margin:5px;color:#00e5ff;}
 
 <div class="brand">PHYSICS PRO</div>
 
-<p>Calculator + Physics + History</p>
+<p>Learn + Solve + Compete</p>
 
-<!-- INPUT -->
-<input id="display" placeholder="Type calculation or use buttons">
+<!-- DISPLAY -->
+<input id="display" placeholder="Type calculation">
 
 <br>
 
@@ -118,45 +133,34 @@ h4{margin:5px;color:#00e5ff;}
 <button class="clear" onclick="clearD()">Clear</button>
 <button class="clear" onclick="clearHistory()">Clear History</button>
 
-<!-- MECHANICS -->
-<h4>1. Mechanics</h4>
-<button class="formula" onclick="set('v = u + a*t')">Kinematics</button>
+<button class="share" onclick="shareResult()">Share</button>
+
+<!-- PHYSICS FORMULAS -->
+<div class="section">
+<h4>⚛ Physics Formulas</h4>
 <button class="formula" onclick="set('F = m*a')">Force</button>
+<button class="formula" onclick="set('V = I*R')">Ohm</button>
 <button class="formula" onclick="set('p = m*v')">Momentum</button>
 <button class="formula" onclick="set('W = F*d')">Work</button>
-<button class="formula" onclick="set('P = W/t')">Power</button>
 <button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
-<button class="formula" onclick="set('PE = m*g*h')">Potential</button>
+<button class="formula" onclick="set('v = f*lambda')">Wave</button>
+</div>
 
-<!-- ELECTRICITY -->
-<h4>2. Electricity</h4>
-<button class="formula" onclick="set('V = I*R')">Ohm Law</button>
-<button class="formula" onclick="set('P = V*I')">Power</button>
-<button class="formula" onclick="set('Q = I*t')">Charge</button>
-<button class="formula" onclick="set('R = R1 + R2')">Series</button>
-<button class="formula" onclick="set('1/R = 1/R1 + 1/R2')">Parallel</button>
-<button class="formula" onclick="set('F = k*q1*q2/r*r')">Coulomb</button>
-<button class="formula" onclick="set('E = V/d')">Electric Field</button>
+<!-- UNITS -->
+<div class="section">
+<h4>📏 Units Converter</h4>
+<button class="unit" onclick="set('1 m = 100 cm')">Meter-CM</button>
+<button class="unit" onclick="set('1 kg = 1000 g')">Kg-Gram</button>
+<button class="unit" onclick="set('1 km = 1000 m')">KM-M</button>
+</div>
 
-<!-- WAVES -->
-<h4>3. Waves</h4>
-<button class="formula" onclick="set('v = f*lambda')">Wave Speed</button>
-<button class="formula" onclick="set('f = 1/T')">Frequency</button>
-<button class="formula" onclick="set('T = 1/f')">Time Period</button>
-
-<!-- OPTICS -->
-<h4>4. Optics</h4>
-<button class="formula" onclick="set('1/f = 1/u + 1/v')">Lens/Mirror</button>
-<button class="formula" onclick="set('m = v/u')">Magnification</button>
-
-<!-- THERMAL -->
-<h4>5. Thermodynamics</h4>
-<button class="formula" onclick="set('Q = m*c*deltaT')">Heat</button>
-
-<!-- MODERN -->
-<h4>6. Modern Physics</h4>
-<button class="formula" onclick="set('E = h*f')">Photon</button>
-<button class="formula" onclick="set('lambda = h/p')">de Broglie</button>
+<!-- DAILY CHALLENGE -->
+<div class="section">
+<h4>🎯 Daily Challenge</h4>
+<button class="challenge" onclick="setChallenge()">New Challenge</button>
+<div id="challengeText"></div>
+<div id="badge"></div>
+</div>
 
 <!-- HISTORY -->
 <div class="history" id="historyBox">
@@ -174,7 +178,7 @@ function add(v){
 document.getElementById("display").value += v;
 }
 
-/* SET FORMULA */
+/* SET */
 function set(v){
 document.getElementById("display").value = v;
 }
@@ -184,16 +188,24 @@ function clearD(){
 document.getElementById("display").value = "";
 }
 
-/* SOLVE */
+/* SOLVE + STEP BY STEP */
 function solve(){
 try{
 let text = document.getElementById("display").value;
 let clean = text.replace(/[a-zA-Z= ]/g,'');
 let result = Function("return "+clean)();
 
+/* STEP BY STEP OUTPUT */
+let steps = "Step 1: Input → " + text +
+"<br>Step 2: Solve → " + result +
+"<br>Answer ready ✔";
+
+/* show steps */
+document.getElementById("challengeText").innerHTML = steps;
+
 document.getElementById("display").value = result;
 
-/* HISTORY SAVE */
+/* HISTORY */
 let record = text + " = " + result;
 history.unshift(record);
 
@@ -205,11 +217,10 @@ alert("Invalid Input ❌");
 }
 }
 
-/* SHOW HISTORY */
+/* HISTORY */
 function showHistory(){
 let box = document.getElementById("historyBox");
 box.innerHTML = "<b>📜 History</b><br>";
-
 history.forEach(h=>{
 box.innerHTML += "<div>"+h+"</div>";
 });
@@ -220,6 +231,29 @@ function clearHistory(){
 history = [];
 localStorage.removeItem("history");
 showHistory();
+}
+
+/* SHARE RESULT */
+function shareResult(){
+let text = document.getElementById("display").value;
+if(navigator.share){
+navigator.share({
+title: "Physics Result",
+text: "I solved: " + text + " using Physics Pro App ⚡"
+});
+}else{
+alert("Share not supported in this browser");
+}
+}
+
+/* DAILY CHALLENGE */
+function setChallenge(){
+let q = "A body of mass 2kg accelerated at 3 m/s². Find force?";
+document.getElementById("challengeText").innerHTML = "Q: " + q;
+
+/* badge system */
+document.getElementById("badge").innerHTML =
+"🏆 Complete challenge to earn Physics Master Badge";
 }
 
 /* LOAD */
