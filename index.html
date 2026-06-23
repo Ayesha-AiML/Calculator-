@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Vault Calculator</title>
+<title>Ayesha Master Calculator</title>
 
 <style>
 body{
@@ -11,28 +11,90 @@ justify-content:center;
 align-items:center;
 height:100vh;
 font-family:Arial;
-background:#050816;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+transition:0.5s;
+}
+
+/* LIGHT MODE */
+.light{
+background:linear-gradient(135deg,#fdfbfb,#ebedee) !important;
+}
+
+#login{
+position:absolute;
+width:100%;
+height:100%;
+background:#0b1220;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 color:white;
 }
 
-.container{display:flex; gap:20px;}
-
-.calculator,.game,.vault{
-background:#0b1220;
-padding:20px;
-border-radius:15px;
-width:280px;
-text-align:center;
+#login input{
+padding:10px;
+font-size:18px;
+margin:10px;
+border:none;
+border-radius:8px;
 }
 
-input{
-width:240px;
-height:50px;
-font-size:20px;
+#login button{
+padding:10px 20px;
+background:#ff4d6d;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+.container{
+display:none;
+gap:20px;
+}
+
+.calculator{
+background:#111827;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+.light .calculator{
+background:white;
+}
+
+.brand{
+color:#ff4d6d;
+font-size:22px;
+font-weight:bold;
+}
+
+.tag{
+color:#9ca3af;
+font-size:12px;
+margin-bottom:10px;
+}
+
+#display{
+width:260px;
+height:60px;
+font-size:24px;
 text-align:right;
 margin-bottom:10px;
-border-radius:10px;
 border:none;
+outline:none;
+padding:10px;
+border-radius:10px;
+background:#1f2937;
+color:white;
+}
+
+.light #display{
+background:#f1f1f1;
+color:black;
 }
 
 button{
@@ -42,50 +104,69 @@ margin:4px;
 border:none;
 border-radius:10px;
 cursor:pointer;
+transition:0.2s;
 }
 
-.num{background:#1f2937;color:white;}
-.op{background:#ff9800;}
-.equal{background:#00e676;}
-.extra{background:#00bcd4;color:white;}
-.clear{background:#ff5252;color:white;}
-.mode{background:#8b5cf6;color:white;}
-.small{width:120px;height:50px;}
+button:hover{transform:scale(1.05);}
 
-.hiddenItem{
-background:#1f2937;
-padding:8px;
-margin:5px;
-border-radius:8px;
+.num{background:#374151;color:white;}
+.op{background:#f59e0b;color:white;}
+.equal{background:#10b981;color:white;}
+.clear{background:#ef4444;color:white;width:125px;}
+.science{background:#6366f1;color:white;}
+.mode{background:#3b82f6;color:white;width:125px;}
+.extra{background:#8b5cf6;color:white;}
+
+.history{
+background:#0b1220;
+padding:15px;
+border-radius:15px;
+width:170px;
+color:white;
+font-size:12px;
+height:300px;
+overflow:auto;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- LOGIN -->
+<div id="login">
+<h2>🔐 Ayesha Calculator</h2>
+<p>Enter Password</p>
+<input type="password" id="pass">
+<button onclick="checkPass()">Unlock</button>
+</div>
 
-<!-- CALCULATOR -->
+<!-- APP -->
+<div class="container" id="app">
+
 <div class="calculator">
-<h3>💖 Calculator</h3>
 
-<input id="display" readonly>
+<div class="brand">💖 AYESHA 💖</div>
+<div class="tag">Master Scientific Calculator</div>
+
+<input type="text" id="display" readonly>
 
 <br>
 
-<!-- SHIFT MODE -->
-<button class="mode" onclick="toggleShift()">SHIFT</button>
+<!-- SCIENTIFIC -->
+<button class="science" onclick="append('Math.sin(')">sin</button>
+<button class="science" onclick="append('Math.cos(')">cos</button>
+<button class="science" onclick="append('Math.tan(')">tan</button>
+<button class="science" onclick="append('Math.sqrt(')">√</button>
+
+<br>
+
+<!-- EXTRA FEATURES -->
 <button class="extra" onclick="append('(')">(</button>
 <button class="extra" onclick="append(')')">)</button>
-
-<br>
-
-<button class="extra" onclick="trig('sin')">sin</button>
-<button class="extra" onclick="trig('cos')">cos</button>
-<button class="extra" onclick="trig('tan')">tan</button>
-
+<button class="extra" onclick="percent()">%</button>
 <button class="extra" onclick="square()">x²</button>
 <button class="extra" onclick="cube()">x³</button>
+<button class="extra" onclick="backspace()">⌫</button>
 
 <br>
 
@@ -117,109 +198,93 @@ border-radius:8px;
 
 <br>
 
-<button class="clear small" onclick="clearDisplay()">C</button>
-<button class="small" onclick="openGame()">🎮 Game</button>
-<button class="small" onclick="openVault()">🔐 Vault</button>
+<button class="clear" onclick="clearDisplay()">C</button>
+<button class="mode" onclick="toggleMode()">🌙 Mode</button>
+<button class="clear" onclick="clearHistory()">Clear History</button>
 
 </div>
 
-<!-- GAME -->
-<div class="game" id="game" style="display:none;">
-<h3>🎮 Guess Game</h3>
-<p>Guess 1 - 10</p>
-
-<input id="guess" placeholder="Enter">
-
-<button onclick="check()">Check</button>
-
-<p id="msg"></p>
-</div>
-
-<!-- VAULT -->
-<div class="vault" id="vault" style="display:none;">
-<h3>🔐 Vault (Hidden Items)</h3>
-
-<div class="hiddenItem">📸 Photo_001.jpg</div>
-<div class="hiddenItem">🎥 Video_Secret.mp4</div>
-<div class="hiddenItem">📁 Private Files</div>
-
-<p style="font-size:12px;">(Simulation only - real hiding needs Android app)</p>
+<!-- HISTORY -->
+<div class="history">
+<h3>📜 History</h3>
+<div id="history"></div>
 </div>
 
 </div>
 
 <script>
 
-let shift=false;
-let secret=Math.floor(Math.random()*10)+1;
+let PASSWORD = "Ayesha123";
 
-/* BASIC */
-function append(v){document.getElementById("display").value+=v;}
-function clearDisplay(){document.getElementById("display").value="";}
+function checkPass(){
+let p = document.getElementById("pass").value;
+if(p === PASSWORD){
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="flex";
+}else alert("Wrong Password");
+}
+
+function append(v){
+document.getElementById("display").value += v;
+}
+
+function backspace(){
+let d = document.getElementById("display");
+d.value = d.value.slice(0,-1);
+}
+
+function clearDisplay(){
+document.getElementById("display").value="";
+}
+
+function percent(){
+let d = document.getElementById("display");
+d.value = eval(d.value)/100;
+}
+
+function square(){
+let d = document.getElementById("display");
+d.value = Math.pow(eval(d.value),2);
+}
+
+/* ✅ NEW CUBE FUNCTION */
+function cube(){
+let d = document.getElementById("display");
+d.value = Math.pow(eval(d.value),3);
+}
 
 function calculate(){
 try{
-document.getElementById("display").value =
-Function("return "+document.getElementById("display").value)();
+let exp = document.getElementById("display").value;
+let result = eval(exp);
+
+document.getElementById("display").value = result;
+
+let history = JSON.parse(localStorage.getItem("history") || "[]");
+history.push(exp + " = " + result);
+localStorage.setItem("history", JSON.stringify(history));
+
+document.getElementById("history").innerHTML =
+history.map(h => "<div>"+h+"</div>").join("");
+
 }catch{
-alert("Invalid");
+alert("Invalid Input");
 }
 }
 
-/* TRIG + SHIFT */
-function toggleShift(){
-shift=!shift;
-alert(shift ? "SHIFT ON (inverse mode)" : "SHIFT OFF (normal mode)");
+function clearHistory(){
+localStorage.removeItem("history");
+document.getElementById("history").innerHTML="";
 }
 
-function trig(type){
-let d=document.getElementById("display");
-let val=eval(d.value||0);
-
-if(!shift){
-if(type==="sin") d.value=Math.sin(val);
-if(type==="cos") d.value=Math.cos(val);
-if(type==="tan") d.value=Math.tan(val);
-}else{
-if(type==="sin") d.value=Math.asin(val);
-if(type==="cos") d.value=Math.acos(val);
-if(type==="tan") d.value=Math.atan(val);
-}
+window.onload = function(){
+let history = JSON.parse(localStorage.getItem("history") || "[]");
+document.getElementById("history").innerHTML =
+history.map(h => "<div>"+h+"</div>").join("");
 }
 
-/* POWER */
-function square(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),2);
-}
-
-function cube(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),3);
-}
-
-/* GAME */
-function openGame(){
-document.getElementById("game").style.display="block";
-document.getElementById("vault").style.display="none";
-}
-
-function check(){
-let g=Number(document.getElementById("guess").value);
-if(g===secret){
-document.getElementById("msg").innerText="🎉 Correct!";
-secret=Math.floor(Math.random()*10)+1;
-}else if(g>secret){
-document.getElementById("msg").innerText="📉 Too High";
-}else{
-document.getElementById("msg").innerText="📈 Too Low";
-}
-}
-
-/* VAULT */
-function openVault(){
-document.getElementById("vault").style.display="block";
-document.getElementById("game").style.display="none";
+function toggleMode(){
+document.body.classList.toggle("light");
 }
 
 </script>
