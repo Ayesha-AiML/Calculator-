@@ -125,6 +125,7 @@ font-size:12px;
 <button class="clear" onclick="clearD()">AC</button>
 <button class="remove" onclick="backspace()">⌫ Remove</button>
 <button class="clear" onclick="clearHistory()">History</button>
+<input type="text" id="searchBox" placeholder="🔍 Search Formula..." onkeyup="searchFormula()">
 
 <!-- ⚛ MECHANICS -->
 <h4>Mechanics</h4>
@@ -153,6 +154,11 @@ font-size:12px;
 <button class="unit" onclick="set('1 m = 100 cm')">m</button>
 <button class="unit" onclick="set('1 kg = 1000 g')">kg</button>
 <button class="unit" onclick="set('1 N = kg m/s²')">Force Unit</button>
+<div id="stats">
+⭐ XP: <span id="xp">0</span><br>
+🏆 Level: <span id="level">Beginner</span><br>
+🔥 Streak: <span id="streak">0</span>
+</div>
 
 <!-- 🎯 CHALLENGE -->
 <h4>Daily Challenge</h4>
@@ -165,6 +171,32 @@ font-size:12px;
 </div>
 
 </div>
+let xp = 0;
+let streak = 0;
+
+function updateLevel(){
+document.getElementById("xp").innerText = xp;
+
+let level = "Beginner";
+
+if(xp>=50) level="Explorer";
+if(xp>=100) level="Physics Master";
+if(xp>=200) level="Einstein";
+
+document.getElementById("level").innerText = level;
+}
+
+function searchFormula(){
+let input = document.getElementById("searchBox").value.toLowerCase();
+let buttons = document.querySelectorAll(".formula");
+
+buttons.forEach(btn=>{
+btn.style.display =
+btn.innerText.toLowerCase().includes(input)
+? "inline-block"
+: "none";
+});
+}
 
 <script>
 
