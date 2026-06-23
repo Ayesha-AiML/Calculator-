@@ -1,282 +1,226 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ayesha Physics Master App</title>
+<title>Smart Vault Calculator</title>
 
 <style>
 body{
 margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+font-family:Arial;
+background:#050816;
+color:white;
 }
 
-.box{
-background:#111827;
-padding:15px;
-border-radius:20px;
-width:480px;
-max-height:95vh;
-overflow:auto;
+.container{display:flex; gap:20px;}
+
+.calculator,.game,.vault{
+background:#0b1220;
+padding:20px;
+border-radius:15px;
+width:280px;
 text-align:center;
 }
 
-.brand{
-font-size:32px;
-font-weight:bold;
-background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
 input{
-width:380px;
+width:240px;
 height:50px;
-font-size:16px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-padding:10px;
+font-size:20px;
 text-align:right;
+margin-bottom:10px;
+border-radius:10px;
+border:none;
 }
 
 button{
-padding:6px;
-margin:3px;
+width:60px;
+height:60px;
+margin:4px;
 border:none;
-border-radius:6px;
+border-radius:10px;
 cursor:pointer;
-font-size:11px;
 }
 
-/* calculator buttons */
-.num{background:#374151;color:white;width:55px;height:45px;}
-.op{background:#f59e0b;color:white;width:55px;height:45px;}
-.eq{background:#10b981;color:white;width:110px;}
-.clear{background:#ef4444;color:white;width:110px;}
+.num{background:#1f2937;color:white;}
+.op{background:#ff9800;}
+.equal{background:#00e676;}
+.extra{background:#00bcd4;color:white;}
+.clear{background:#ff5252;color:white;}
+.mode{background:#8b5cf6;color:white;}
+.small{width:120px;height:50px;}
 
-/* features */
-.formula{background:#8b5cf6;color:white;}
-.unit{background:#22c55e;color:white;}
-.challenge{background:#f43f5e;color:white;}
-.remove{background:#ef4444;color:white;}
-
-/* history */
-.history{
-margin-top:10px;
-background:#0b1220;
-padding:10px;
-border-radius:10px;
-height:120px;
-overflow:auto;
-text-align:left;
-font-size:12px;
+.hiddenItem{
+background:#1f2937;
+padding:8px;
+margin:5px;
+border-radius:8px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-
-<!-- ✨ AYESHA -->
-<div class="brand">✨ AYESHA ✨</div>
-<p>Physics Master Calculator App</p>
-
-<!-- DISPLAY -->
-<input id="display" placeholder="Type calculation">
-
-<br>
+<div class="container">
 
 <!-- CALCULATOR -->
-<button class="num" onclick="add('7')">7</button>
-<button class="num" onclick="add('8')">8</button>
-<button class="num" onclick="add('9')">9</button>
-<button class="op" onclick="add('/')">÷</button>
+<div class="calculator">
+<h3>💖 Calculator</h3>
+
+<input id="display" readonly>
 
 <br>
 
-<button class="num" onclick="add('4')">4</button>
-<button class="num" onclick="add('5')">5</button>
-<button class="num" onclick="add('6')">6</button>
-<button class="op" onclick="add('*')">×</button>
+<!-- SHIFT MODE -->
+<button class="mode" onclick="toggleShift()">SHIFT</button>
+<button class="extra" onclick="append('(')">(</button>
+<button class="extra" onclick="append(')')">)</button>
 
 <br>
 
-<button class="num" onclick="add('1')">1</button>
-<button class="num" onclick="add('2')">2</button>
-<button class="num" onclick="add('3')">3</button>
-<button class="op" onclick="add('-')">-</button>
+<button class="extra" onclick="trig('sin')">sin</button>
+<button class="extra" onclick="trig('cos')">cos</button>
+<button class="extra" onclick="trig('tan')">tan</button>
+
+<button class="extra" onclick="square()">x²</button>
+<button class="extra" onclick="cube()">x³</button>
 
 <br>
 
-<button class="num" onclick="add('0')">0</button>
-<button class="num" onclick="add('.')">.</button>
-<button class="eq" onclick="solve()">= Solve</button>
-<button class="op" onclick="add('+')">+</button>
+<button class="num" onclick="append('7')">7</button>
+<button class="num" onclick="append('8')">8</button>
+<button class="num" onclick="append('9')">9</button>
+<button class="op" onclick="append('/')">÷</button>
 
 <br>
 
-<!-- ⌨️ KEYBOARD STYLE CONTROLS -->
-<button class="clear" onclick="clearD()">AC</button>
-<button class="remove" onclick="backspace()">⌫ Remove</button>
-<button class="clear" onclick="clearHistory()">History</button>
-<input type="text" id="searchBox" placeholder="🔍 Search Formula..." onkeyup="searchFormula()">
+<button class="num" onclick="append('4')">4</button>
+<button class="num" onclick="append('5')">5</button>
+<button class="num" onclick="append('6')">6</button>
+<button class="op" onclick="append('*')">×</button>
 
-<!-- ⚛ MECHANICS -->
-<h4>Mechanics</h4>
-<button class="formula" onclick="set('v = u + a*t')">Kinematics</button>
-<button class="formula" onclick="set('F = m*a')">Force</button>
-<button class="formula" onclick="set('p = m*v')">Momentum</button>
-<button class="formula" onclick="set('W = F*d')">Work</button>
-<button class="formula" onclick="set('KE = 1/2 m v²')">Energy</button>
-<button class="formula" onclick="set('PE = m*g*h')">Potential</button>
+<br>
 
-<!-- ⚡ ELECTRICITY -->
-<h4>Electricity</h4>
-<button class="formula" onclick="set('V = I*R')">Ohm</button>
-<button class="formula" onclick="set('P = V*I')">Power</button>
-<button class="formula" onclick="set('Q = I*t')">Charge</button>
-<button class="formula" onclick="set('F = k*q1*q2/r²')">Coulomb</button>
+<button class="num" onclick="append('1')">1</button>
+<button class="num" onclick="append('2')">2</button>
+<button class="num" onclick="append('3')">3</button>
+<button class="op" onclick="append('-')">-</button>
 
-<!-- 🌊 WAVES -->
-<h4>Waves</h4>
-<button class="formula" onclick="set('v = f*λ')">Wave Speed</button>
-<button class="formula" onclick="set('f = 1/T')">Frequency</button>
+<br>
 
-<!-- 📏 UNITS -->
-<h4>Units</h4>
-<button class="unit" onclick="set('1 km = 1000 m')">Km</button>
-<button class="unit" onclick="set('1 m = 100 cm')">m</button>
-<button class="unit" onclick="set('1 kg = 1000 g')">kg</button>
-<button class="unit" onclick="set('1 N = kg m/s²')">Force Unit</button>
-<div id="stats">
-⭐ XP: <span id="xp">0</span><br>
-🏆 Level: <span id="level">Beginner</span><br>
-🔥 Streak: <span id="streak">0</span>
+<button class="num" onclick="append('0')">0</button>
+<button class="num" onclick="append('.')">.</button>
+<button class="equal" onclick="calculate()">=</button>
+<button class="op" onclick="append('+')">+</button>
+
+<br>
+
+<button class="clear small" onclick="clearDisplay()">C</button>
+<button class="small" onclick="openGame()">🎮 Game</button>
+<button class="small" onclick="openVault()">🔐 Vault</button>
+
 </div>
 
-<!-- 🎯 CHALLENGE -->
-<h4>Daily Challenge</h4>
-<button class="challenge" onclick="challenge()">New Challenge</button>
-<div id="challengeBox"></div>
+<!-- GAME -->
+<div class="game" id="game" style="display:none;">
+<h3>🎮 Guess Game</h3>
+<p>Guess 1 - 10</p>
 
-<!-- 📜 HISTORY -->
-<div class="history" id="historyBox">
-<b>History</b><br>
+<input id="guess" placeholder="Enter">
+
+<button onclick="check()">Check</button>
+
+<p id="msg"></p>
+</div>
+
+<!-- VAULT -->
+<div class="vault" id="vault" style="display:none;">
+<h3>🔐 Vault (Hidden Items)</h3>
+
+<div class="hiddenItem">📸 Photo_001.jpg</div>
+<div class="hiddenItem">🎥 Video_Secret.mp4</div>
+<div class="hiddenItem">📁 Private Files</div>
+
+<p style="font-size:12px;">(Simulation only - real hiding needs Android app)</p>
 </div>
 
 </div>
-let xp = 0;
-let streak = 0;
-
-function updateLevel(){
-document.getElementById("xp").innerText = xp;
-
-let level = "Beginner";
-
-if(xp>=50) level="Explorer";
-if(xp>=100) level="Physics Master";
-if(xp>=200) level="Einstein";
-
-document.getElementById("level").innerText = level;
-}
-
-function searchFormula(){
-let input = document.getElementById("searchBox").value.toLowerCase();
-let buttons = document.querySelectorAll(".formula");
-
-buttons.forEach(btn=>{
-btn.style.display =
-btn.innerText.toLowerCase().includes(input)
-? "inline-block"
-: "none";
-});
-}
 
 <script>
 
-let history = JSON.parse(localStorage.getItem("history")) || [];
+let shift=false;
+let secret=Math.floor(Math.random()*10)+1;
 
-/* ADD */
-function add(v){
-document.getElementById("display").value += v;
-}
+/* BASIC */
+function append(v){document.getElementById("display").value+=v;}
+function clearDisplay(){document.getElementById("display").value="";}
 
-/* SET */
-function set(v){
-document.getElementById("display").value = v;
-}
-
-/* CLEAR */
-function clearD(){
-document.getElementById("display").value = "";
-}
-
-/* ⌫ REMOVE (BACKSPACE KEY FUNCTION) */
-function backspace(){
-let val = document.getElementById("display").value;
-document.getElementById("display").value = val.slice(0,-1);
-}
-
-/* SOLVE */
-function solve(){
+function calculate(){
 try{
-let text = document.getElementById("display").value;
-let clean = text.replace(/[a-zA-Z=²√πλ ]/g,'');
-let result = Function("return "+clean)();
-
-document.getElementById("display").value = result;
-
-/* history */
-history.unshift(text + " = " + result);
-localStorage.setItem("history", JSON.stringify(history));
-showHistory();
-
+document.getElementById("display").value =
+Function("return "+document.getElementById("display").value)();
 }catch{
-alert("Invalid Input ❌");
+alert("Invalid");
 }
 }
 
-/* HISTORY */
-function showHistory(){
-let box = document.getElementById("historyBox");
-box.innerHTML = "<b>History</b><br>";
-history.forEach(h=>{
-box.innerHTML += "<div>"+h+"</div>";
-});
+/* TRIG + SHIFT */
+function toggleShift(){
+shift=!shift;
+alert(shift ? "SHIFT ON (inverse mode)" : "SHIFT OFF (normal mode)");
 }
 
-/* CLEAR HISTORY */
-function clearHistory(){
-history = [];
-localStorage.removeItem("history");
-showHistory();
+function trig(type){
+let d=document.getElementById("display");
+let val=eval(d.value||0);
+
+if(!shift){
+if(type==="sin") d.value=Math.sin(val);
+if(type==="cos") d.value=Math.cos(val);
+if(type==="tan") d.value=Math.tan(val);
+}else{
+if(type==="sin") d.value=Math.asin(val);
+if(type==="cos") d.value=Math.acos(val);
+if(type==="tan") d.value=Math.atan(val);
+}
 }
 
-/* CHALLENGE */
-function challenge(){
-document.getElementById("challengeBox").innerHTML =
-"Q: Find force if m=2kg, a=3m/s²<br>" +
-"<input id='ans' placeholder='Answer'>" +
-"<button onclick='check()'>Submit</button>";
+/* POWER */
+function square(){
+let d=document.getElementById("display");
+d.value=Math.pow(eval(d.value||0),2);
+}
+
+function cube(){
+let d=document.getElementById("display");
+d.value=Math.pow(eval(d.value||0),3);
+}
+
+/* GAME */
+function openGame(){
+document.getElementById("game").style.display="block";
+document.getElementById("vault").style.display="none";
 }
 
 function check(){
-let a = document.getElementById("ans").value;
-if(a == "6"){
-alert("Correct  + Badge Earned 🏆");
+let g=Number(document.getElementById("guess").value);
+if(g===secret){
+document.getElementById("msg").innerText="🎉 Correct!";
+secret=Math.floor(Math.random()*10)+1;
+}else if(g>secret){
+document.getElementById("msg").innerText="📉 Too High";
 }else{
-alert("Try Again ❌");
+document.getElementById("msg").innerText="📈 Too Low";
 }
 }
 
-/* LOAD */
-window.onload = showHistory;
+/* VAULT */
+function openVault(){
+document.getElementById("vault").style.display="block";
+document.getElementById("game").style.display="none";
+}
 
 </script>
 
