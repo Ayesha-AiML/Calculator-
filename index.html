@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ayesha Calculator</title>
+<title>Ayesha Master Calculator</title>
 
 <style>
 body{
@@ -12,9 +12,14 @@ align-items:center;
 height:100vh;
 font-family:Arial;
 background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+transition:0.5s;
 }
 
-/* LOGIN */
+/* LIGHT MODE */
+.light{
+background:linear-gradient(135deg,#fdfbfb,#ebedee) !important;
+}
+
 #login{
 position:absolute;
 width:100%;
@@ -44,7 +49,6 @@ border-radius:8px;
 cursor:pointer;
 }
 
-/* APP */
 .container{
 display:none;
 gap:20px;
@@ -56,6 +60,10 @@ padding:20px;
 border-radius:20px;
 text-align:center;
 box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+.light .calculator{
+background:white;
 }
 
 .brand{
@@ -85,6 +93,11 @@ background:#1f2937;
 color:white;
 }
 
+.light #display{
+background:#f1f1f1;
+color:black;
+}
+
 button{
 width:60px;
 height:60px;
@@ -105,6 +118,7 @@ transform:scale(1.05);
 .equal{background:#10b981;color:white;}
 .clear{background:#ef4444;color:white;width:125px;}
 .science{background:#6366f1;color:white;}
+.mode{background:#3b82f6;color:white;width:125px;}
 
 .history{
 background:#0b1220;
@@ -135,7 +149,7 @@ overflow:auto;
 <div class="calculator">
 
 <div class="brand">💖 AYESHA 💖</div>
-<div class="tag">Professional Scientific Calculator</div>
+<div class="tag">Master Scientific Calculator</div>
 
 <input type="text" id="display" readonly>
 
@@ -178,6 +192,7 @@ overflow:auto;
 <br>
 
 <button class="clear" onclick="clearDisplay()">C</button>
+<button class="mode" onclick="toggleMode()">🌙 Mode</button>
 
 </div>
 
@@ -216,7 +231,11 @@ document.getElementById("display").value="";
 
 /* VOICE (ONLY RESULT) */
 function speak(text){
-let msg = new SpeechSynthesisUtterance(text);
+let msg = new SpeechSynthesisUtterance(String(text));
+msg.lang = "en-US";
+msg.rate = 1;
+msg.pitch = 1;
+speechSynthesis.cancel();
 speechSynthesis.speak(msg);
 }
 
@@ -249,6 +268,11 @@ window.onload = function(){
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 document.getElementById("history").innerHTML =
 history.map(h => "<div>"+h+"</div>").join("");
+}
+
+/* MODE TOGGLE */
+function toggleMode(){
+document.body.classList.toggle("light");
 }
 
 </script>
