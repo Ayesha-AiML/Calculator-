@@ -1,169 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Scientific Calculator</title>
+<title>Calculator Login</title>
 
 <style>
 body{
 margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-font-family:Arial;
-background:#050816;
-color:white;
 }
 
-.container{
-background:#0b1220;
+.box{
+background:#111827;
 padding:20px;
-border-radius:15px;
+border-radius:12px;
 text-align:center;
 }
 
 input{
-width:260px;
-height:60px;
-font-size:24px;
-text-align:right;
-margin-bottom:10px;
-border:none;
-border-radius:10px;
+width:240px;
 padding:10px;
+margin:5px;
+border:none;
+border-radius:8px;
 }
 
 button{
-width:60px;
-height:60px;
-margin:4px;
+padding:10px;
+margin:5px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
 }
 
-.num{background:#1f2937;color:white;}
-.op{background:#ff9800;}
-.equal{background:#00e676;}
-.extra{background:#8b5cf6;color:white;}
-.clear{background:#ef4444;color:white;}
-.mode{background:#00bcd4;color:white;width:130px;}
+#calc{display:none;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
-<h3>💖 Smart Calculator</h3>
+<!-- LOGIN -->
+<div id="login">
+<h3>🔐 Calculator Login</h3>
+<p id="text">Set your password</p>
 
-<input id="display" readonly>
+<input type="password" id="pass" placeholder="Enter Password"><br>
 
-<br>
+<button onclick="handle()">Continue</button>
+</div>
 
-<!-- SHIFT BUTTON -->
-<button class="mode" onclick="toggleShift()">SHIFT</button>
+<!-- CALCULATOR -->
+<div id="calc">
+<h3>💖 Calculator</h3>
 
-<button class="extra" onclick="append('(')">(</button>
-<button class="extra" onclick="append(')')">)</button>
+<input id="display" readonly><br>
 
-<br>
+<button onclick="append('1')">1</button>
+<button onclick="append('2')">2</button>
+<button onclick="append('3')">3</button>
+<button onclick="append('+')">+</button><br>
 
-<button class="extra" onclick="trig('sin')">sin</button>
-<button class="extra" onclick="trig('cos')">cos</button>
-<button class="extra" onclick="trig('tan')">tan</button>
+<button onclick="append('4')">4</button>
+<button onclick="append('5')">5</button>
+<button onclick="append('6')">6</button>
+<button onclick="append('-')">-</button><br>
 
-<button class="extra" onclick="square()">x²</button>
-<button class="extra" onclick="cube()">x³</button>
+<button onclick="append('7')">7</button>
+<button onclick="append('8')">8</button>
+<button onclick="append('9')">9</button>
+<button onclick="append('*')">*</button><br>
 
-<br>
+<button onclick="append('0')">0</button>
+<button onclick="calculate()">=</button>
+<button onclick="clearD()">C</button>
 
-<button class="num" onclick="append('7')">7</button>
-<button class="num" onclick="append('8')">8</button>
-<button class="num" onclick="append('9')">9</button>
-<button class="op" onclick="append('/')">÷</button>
+<br><br>
+<button onclick="logout()">Logout</button>
 
-<br>
-
-<button class="num" onclick="append('4')">4</button>
-<button class="num" onclick="append('5')">5</button>
-<button class="num" onclick="append('6')">6</button>
-<button class="op" onclick="append('*')">×</button>
-
-<br>
-
-<button class="num" onclick="append('1')">1</button>
-<button class="num" onclick="append('2')">2</button>
-<button class="num" onclick="append('3')">3</button>
-<button class="op" onclick="append('-')">-</button>
-
-<br>
-
-<button class="num" onclick="append('0')">0</button>
-<button class="num" onclick="append('.')">.</button>
-<button class="equal" onclick="calculate()">=</button>
-<button class="op" onclick="append('+')">+</button>
-
-<br>
-
-<button class="clear" onclick="clearDisplay()">C</button>
+</div>
 
 </div>
 
 <script>
 
-let shift=false;
+let saved = localStorage.getItem("password");
 
-/* INPUT */
-function append(v){
-document.getElementById("display").value+=v;
+/* check first time */
+if(saved){
+document.getElementById("text").innerText="Enter your password";
 }
 
-function clearDisplay(){
+/* first time set OR login */
+function handle(){
+let p = document.getElementById("pass").value;
+
+if(!saved){
+localStorage.setItem("password", p);
+alert("Password Set Successfully!");
+showCalc();
+}else{
+if(p === saved){
+showCalc();
+}else{
+alert("Wrong Password");
+}
+}
+}
+
+/* calculator */
+function append(v){
+document.getElementById("display").value += v;
+}
+
+function clearD(){
 document.getElementById("display").value="";
 }
 
-/* CALC */
 function calculate(){
 try{
 document.getElementById("display").value =
-Function("return "+document.getElementById("display").value)();
+eval(document.getElementById("display").value);
 }catch{
-alert("Invalid Input");
+alert("Error");
 }
 }
 
-/* SHIFT MODE */
-function toggleShift(){
-shift=!shift;
-alert(shift ? "SHIFT ON (Inverse Mode)" : "SHIFT OFF (Normal Mode)");
+/* logout */
+function logout(){
+document.getElementById("login").style.display="block";
+document.getElementById("calc").style.display="none";
+document.getElementById("pass").value="";
 }
 
-/* TRIG FUNCTIONS */
-function trig(type){
-let d=document.getElementById("display");
-let val=eval(d.value||0);
-
-if(!shift){
-if(type==="sin") d.value=Math.sin(val);
-if(type==="cos") d.value=Math.cos(val);
-if(type==="tan") d.value=Math.tan(val);
-}else{
-if(type==="sin") d.value=Math.asin(val);
-if(type==="cos") d.value=Math.acos(val);
-if(type==="tan") d.value=Math.atan(val);
-}
-}
-
-/* POWER */
-function square(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),2);
-}
-
-function cube(){
-let d=document.getElementById("display");
-d.value=Math.pow(eval(d.value||0),3);
+/* show calculator */
+function showCalc(){
+document.getElementById("login").style.display="none";
+document.getElementById("calc").style.display="block";
 }
 
 </script>
