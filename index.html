@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Physics Formula Calculator</title>
+<title>Ayesha Physics Calculator Pro</title>
 
 <style>
 body{
@@ -20,8 +20,8 @@ background:#111827;
 padding:20px;
 border-radius:20px;
 text-align:center;
-width:420px;
-max-height:90vh;
+width:430px;
+max-height:95vh;
 overflow:auto;
 }
 
@@ -34,7 +34,7 @@ background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
 }
 
 input{
-width:340px;
+width:350px;
 height:50px;
 font-size:18px;
 margin:10px 0;
@@ -52,8 +52,13 @@ cursor:pointer;
 font-size:12px;
 }
 
-.solve{background:#10b981;color:white;width:120px;}
+/* calculator buttons */
+.num{background:#374151;color:white;width:60px;height:45px;}
+.op{background:#f59e0b;color:white;width:60px;height:45px;}
+.eq{background:#10b981;color:white;width:120px;}
 .clear{background:#ef4444;color:white;width:120px;}
+
+/* formula */
 .formula{background:#8b5cf6;color:white;}
 
 /* sections */
@@ -67,7 +72,7 @@ border-radius:10px;
 h4{
 margin:5px 0;
 color:#00e5ff;
-font-size:14px;
+font-size:13px;
 }
 </style>
 </head>
@@ -76,77 +81,84 @@ font-size:14px;
 
 <div class="box">
 
-<div class="brand">PHYSICS CALC</div>
+<div class="brand">AYESHA CALC PRO</div>
 
-<p>All Physics Formulas in One App</p>
+<p>Calculator + Physics Formulas</p>
 
-<!-- INPUT -->
-<input id="display" placeholder="Type or select formula">
+<!-- DISPLAY -->
+<input id="display" placeholder="Type or use buttons">
 
 <br>
 
-<button class="solve" onclick="solve()">Solve</button>
+<!-- BASIC CALCULATOR -->
+<button class="num" onclick="add('7')">7</button>
+<button class="num" onclick="add('8')">8</button>
+<button class="num" onclick="add('9')">9</button>
+<button class="op" onclick="add('/')">÷</button>
+
+<br>
+
+<button class="num" onclick="add('4')">4</button>
+<button class="num" onclick="add('5')">5</button>
+<button class="num" onclick="add('6')">6</button>
+<button class="op" onclick="add('*')">×</button>
+
+<br>
+
+<button class="num" onclick="add('1')">1</button>
+<button class="num" onclick="add('2')">2</button>
+<button class="num" onclick="add('3')">3</button>
+<button class="op" onclick="add('-')">-</button>
+
+<br>
+
+<button class="num" onclick="add('0')">0</button>
+<button class="num" onclick="add('.')">.</button>
+<button class="eq" onclick="calculate()">= Solve</button>
+<button class="op" onclick="add('+')">+</button>
+
+<br>
+
 <button class="clear" onclick="clearD()">Clear</button>
 
-<!-- 1. MECHANICS -->
+<!-- 1 MECHANICS -->
 <div class="section">
-<h4>1. Mechanics</h4>
-<button class="formula" onclick="set('v = u + a*t')">Kinematics</button>
+<h4>Mechanics</h4>
+<button class="formula" onclick="set('v = u + a*t')">Velocity</button>
 <button class="formula" onclick="set('F = m*a')">Force</button>
 <button class="formula" onclick="set('p = m*v')">Momentum</button>
 <button class="formula" onclick="set('W = F*d')">Work</button>
 <button class="formula" onclick="set('P = W/t')">Power</button>
 <button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
-<button class="formula" onclick="set('Fc = m*v*v/r')">Circular</button>
 </div>
 
-<!-- 2. ELECTRICITY -->
+<!-- 2 ELECTRICITY -->
 <div class="section">
-<h4>2. Electricity</h4>
+<h4>Electricity</h4>
 <button class="formula" onclick="set('V = I*R')">Ohm</button>
 <button class="formula" onclick="set('P = V*I')">Power</button>
 <button class="formula" onclick="set('R = R1 + R2')">Series</button>
 <button class="formula" onclick="set('1/R = 1/R1 + 1/R2')">Parallel</button>
-<button class="formula" onclick="set('F = k*q1*q2/r*r')">Coulomb</button>
-<button class="formula" onclick="set('E = F/q')">Electric Field</button>
 </div>
 
-<!-- 3. WAVES -->
+<!-- 3 WAVES -->
 <div class="section">
-<h4>3. Waves & SHM</h4>
-<button class="formula" onclick="set('v = f*lambda')">Wave Speed</button>
+<h4>Waves</h4>
+<button class="formula" onclick="set('v = f*lambda')">Wave</button>
 <button class="formula" onclick="set('f = 1/T')">Frequency</button>
-<button class="formula" onclick="set('T = 1/f')">Time Period</button>
-<button class="formula" onclick="set('a = -omega*omega*x')">SHM</button>
 </div>
 
-<!-- 4. OPTICS -->
+<!-- 4 OPTICS -->
 <div class="section">
-<h4>4. Optics</h4>
-<button class="formula" onclick="set('1/f = 1/v + 1/u')">Mirror</button>
-<button class="formula" onclick="set('1/f = 1/v + 1/u')">Lens</button>
+<h4>Optics</h4>
+<button class="formula" onclick="set('1/f = 1/v + 1/u')">Lens/Mirror</button>
 <button class="formula" onclick="set('m = v/u')">Magnification</button>
 </div>
 
-<!-- 5. THERMODYNAMICS -->
+<!-- 5 MODERN -->
 <div class="section">
-<h4>5. Thermodynamics</h4>
-<button class="formula" onclick="set('Q = m*c*deltaT')">Heat</button>
-<button class="formula" onclick="set('W = P*V')">Work Gas</button>
-</div>
-
-<!-- 6. GRAVITATION -->
-<div class="section">
-<h4>6. Gravitation</h4>
-<button class="formula" onclick="set('F = G*m1*m2/r*r')">Gravity</button>
-<button class="formula" onclick="set('g = G*M/r*r')">g value</button>
-</div>
-
-<!-- 7. MODERN PHYSICS -->
-<div class="section">
-<h4>7. Modern Physics</h4>
+<h4>Modern Physics</h4>
 <button class="formula" onclick="set('E = h*f')">Photon</button>
-<button class="formula" onclick="set('E = h*f - work')">Photoelectric</button>
 <button class="formula" onclick="set('lambda = h/p')">de Broglie</button>
 </div>
 
@@ -154,9 +166,9 @@ font-size:14px;
 
 <script>
 
-/* SET */
-function set(v){
-document.getElementById("display").value=v;
+/* ADD */
+function add(v){
+document.getElementById("display").value+=v;
 }
 
 /* CLEAR */
@@ -164,8 +176,13 @@ function clearD(){
 document.getElementById("display").value="";
 }
 
-/* SOLVE BASIC MATH */
-function solve(){
+/* SET FORMULA */
+function set(v){
+document.getElementById("display").value=v;
+}
+
+/* CALCULATE (FULL SAFE) */
+function calculate(){
 try{
 let text=document.getElementById("display").value;
 let clean=text.replace(/[a-zA-Z= ]/g,'');
