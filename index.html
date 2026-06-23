@@ -165,7 +165,7 @@ overflow:auto;
 <button class="extra" onclick="append(')')">)</button>
 <button class="extra" onclick="percent()">%</button>
 <button class="extra" onclick="square()">x²</button>
-<button class="extra" onclick="power()">xʸ</button>
+<button class="extra" onclick="cube()">x³</button>
 <button class="extra" onclick="backspace()">⌫</button>
 
 <br>
@@ -216,7 +216,6 @@ overflow:auto;
 
 let PASSWORD = "Ayesha123";
 
-/* LOGIN */
 function checkPass(){
 let p = document.getElementById("pass").value;
 if(p === PASSWORD){
@@ -225,40 +224,35 @@ document.getElementById("app").style.display="flex";
 }else alert("Wrong Password");
 }
 
-/* INPUT */
 function append(v){
 document.getElementById("display").value += v;
 }
 
-/* BACKSPACE */
 function backspace(){
 let d = document.getElementById("display");
 d.value = d.value.slice(0,-1);
 }
 
-/* CLEAR */
 function clearDisplay(){
 document.getElementById("display").value="";
 }
 
-/* PERCENT */
 function percent(){
 let d = document.getElementById("display");
 d.value = eval(d.value)/100;
 }
 
-/* SQUARE */
 function square(){
 let d = document.getElementById("display");
 d.value = Math.pow(eval(d.value),2);
 }
 
-/* POWER */
-function power(){
-document.getElementById("display").value += "**";
+/* ✅ NEW CUBE FUNCTION */
+function cube(){
+let d = document.getElementById("display");
+d.value = Math.pow(eval(d.value),3);
 }
 
-/* CALCULATE */
 function calculate(){
 try{
 let exp = document.getElementById("display").value;
@@ -266,7 +260,6 @@ let result = eval(exp);
 
 document.getElementById("display").value = result;
 
-/* HISTORY */
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 history.push(exp + " = " + result);
 localStorage.setItem("history", JSON.stringify(history));
@@ -279,20 +272,17 @@ alert("Invalid Input");
 }
 }
 
-/* CLEAR HISTORY */
 function clearHistory(){
 localStorage.removeItem("history");
 document.getElementById("history").innerHTML="";
 }
 
-/* LOAD HISTORY */
 window.onload = function(){
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 document.getElementById("history").innerHTML =
 history.map(h => "<div>"+h+"</div>").join("");
 }
 
-/* MODE */
 function toggleMode(){
 document.body.classList.toggle("light");
 }
