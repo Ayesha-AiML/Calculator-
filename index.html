@@ -1,233 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Physics Calculator Pro</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ayesha Physics Master Pro V2</title>
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.box{
-background:#111827;
-padding:15px;
-border-radius:20px;
-text-align:center;
-width:460px;
-max-height:95vh;
-overflow:auto;
-}
-
-.brand{
-font-size:28px;
-font-weight:bold;
-background:linear-gradient(90deg,#ff4d6d,#8b5cf6,#00e5ff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-input{
-width:370px;
-height:50px;
-font-size:18px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-padding:10px;
-}
-
-button{
-padding:7px;
-margin:3px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-size:11px;
-}
-
-.num{background:#374151;color:white;width:55px;height:45px;}
-.op{background:#f59e0b;color:white;width:55px;height:45px;}
-.eq{background:#10b981;color:white;width:110px;}
-.clear{background:#ef4444;color:white;width:110px;}
-.formula{background:#8b5cf6;color:white;}
-
-/* history */
-.history{
-margin-top:10px;
-background:#0b1220;
-padding:10px;
-border-radius:10px;
-height:130px;
-overflow:auto;
-text-align:left;
-font-size:13px;
-}
-h4{margin:5px;color:#00e5ff;}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+.header{text-align:center;padding:15px;font-size:32px;font-weight:bold}
+.card{background:#111827;margin:10px;padding:12px;border-radius:12px}
+input{width:95%;padding:10px}
+button{padding:8px;margin:3px;border-radius:8px;border:none}
 </style>
 </head>
-
 <body>
+<div class="header">✨ AYESHA ✨<br><small>Physics Master Pro V2</small></div>
 
-<div class="box">
-
-<div class="brand">PHYSICS PRO</div>
-
-<p>Calculator + Physics + History</p>
-
-<!-- INPUT -->
-<input id="display" placeholder="Type calculation or use buttons">
-
-<br>
-
-<!-- CALCULATOR -->
-<button class="num" onclick="add('7')">7</button>
-<button class="num" onclick="add('8')">8</button>
-<button class="num" onclick="add('9')">9</button>
-<button class="op" onclick="add('/')">÷</button>
-
-<br>
-
-<button class="num" onclick="add('4')">4</button>
-<button class="num" onclick="add('5')">5</button>
-<button class="num" onclick="add('6')">6</button>
-<button class="op" onclick="add('*')">×</button>
-
-<br>
-
-<button class="num" onclick="add('1')">1</button>
-<button class="num" onclick="add('2')">2</button>
-<button class="num" onclick="add('3')">3</button>
-<button class="op" onclick="add('-')">-</button>
-
-<br>
-
-<button class="num" onclick="add('0')">0</button>
-<button class="num" onclick="add('.')">.</button>
-<button class="eq" onclick="solve()">= Solve</button>
-<button class="op" onclick="add('+')">+</button>
-
-<br>
-
-<button class="clear" onclick="clearD()">Clear</button>
-<button class="clear" onclick="clearHistory()">Clear History</button>
-
-<!-- MECHANICS -->
-<h4>1. Mechanics</h4>
-<button class="formula" onclick="set('v = u + a*t')">Kinematics</button>
-<button class="formula" onclick="set('F = m*a')">Force</button>
-<button class="formula" onclick="set('p = m*v')">Momentum</button>
-<button class="formula" onclick="set('W = F*d')">Work</button>
-<button class="formula" onclick="set('P = W/t')">Power</button>
-<button class="formula" onclick="set('KE = 0.5*m*v*v')">Energy</button>
-<button class="formula" onclick="set('PE = m*g*h')">Potential</button>
-
-<!-- ELECTRICITY -->
-<h4>2. Electricity</h4>
-<button class="formula" onclick="set('V = I*R')">Ohm Law</button>
-<button class="formula" onclick="set('P = V*I')">Power</button>
-<button class="formula" onclick="set('Q = I*t')">Charge</button>
-<button class="formula" onclick="set('R = R1 + R2')">Series</button>
-<button class="formula" onclick="set('1/R = 1/R1 + 1/R2')">Parallel</button>
-<button class="formula" onclick="set('F = k*q1*q2/r*r')">Coulomb</button>
-<button class="formula" onclick="set('E = V/d')">Electric Field</button>
-
-<!-- WAVES -->
-<h4>3. Waves</h4>
-<button class="formula" onclick="set('v = f*lambda')">Wave Speed</button>
-<button class="formula" onclick="set('f = 1/T')">Frequency</button>
-<button class="formula" onclick="set('T = 1/f')">Time Period</button>
-
-<!-- OPTICS -->
-<h4>4. Optics</h4>
-<button class="formula" onclick="set('1/f = 1/u + 1/v')">Lens/Mirror</button>
-<button class="formula" onclick="set('m = v/u')">Magnification</button>
-
-<!-- THERMAL -->
-<h4>5. Thermodynamics</h4>
-<button class="formula" onclick="set('Q = m*c*deltaT')">Heat</button>
-
-<!-- MODERN -->
-<h4>6. Modern Physics</h4>
-<button class="formula" onclick="set('E = h*f')">Photon</button>
-<button class="formula" onclick="set('lambda = h/p')">de Broglie</button>
-
-<!-- HISTORY -->
-<div class="history" id="historyBox">
-<b>📜 History</b><br>
+<div class="card">
+<h3>📊 Dashboard</h3>
+XP: <span id="xp">0</span> |
+Level: <span id="level">Beginner</span> |
+🔥 Streak: <span id="streak">0</span>
 </div>
 
+<div class="card">
+<h3>🧮 Calculator</h3>
+<input id="display">
+<br>
+<button onclick="add('7')">7</button>
+<button onclick="add('8')">8</button>
+<button onclick="add('9')">9</button>
+<button onclick="add('/')">÷</button><br>
+<button onclick="add('4')">4</button>
+<button onclick="add('5')">5</button>
+<button onclick="add('6')">6</button>
+<button onclick="add('*')">×</button><br>
+<button onclick="add('1')">1</button>
+<button onclick="add('2')">2</button>
+<button onclick="add('3')">3</button>
+<button onclick="add('-')">-</button><br>
+<button onclick="add('0')">0</button>
+<button onclick="add('.')">.</button>
+<button onclick="solve()">=</button>
+<button onclick="add('+')">+</button><br>
+<button onclick="add('Math.sin(')">sin</button>
+<button onclick="add('Math.cos(')">cos</button>
+<button onclick="add('Math.tan(')">tan</button>
+<button onclick="add('Math.PI')">π</button>
+<button onclick="backspace()">⌫</button>
+<button onclick="clearD()">AC</button>
+</div>
+
+<div class="card">
+<h3>⚛ Physics Formula Hub</h3>
+<p>F=ma | V=IR | P=VI | v=u+at | KE=½mv² | PE=mgh | E=hf | E=mc²</p>
+</div>
+
+<div class="card">
+<h3>🎯 Daily Challenge</h3>
+<p>Find Force if m=2kg and a=3m/s²</p>
+<input id="ans">
+<button onclick="check()">Submit</button>
+</div>
+
+<div class="card">
+<h3>📜 History</h3>
+<div id="history"></div>
+<button onclick="clearHistory()">Clear History</button>
 </div>
 
 <script>
+let history=JSON.parse(localStorage.getItem('history')||'[]');
+let xp=0;
 
-let history = JSON.parse(localStorage.getItem("history")) || [];
-
-/* ADD */
-function add(v){
-document.getElementById("display").value += v;
-}
-
-/* SET FORMULA */
-function set(v){
-document.getElementById("display").value = v;
-}
-
-/* CLEAR */
-function clearD(){
-document.getElementById("display").value = "";
-}
-
-/* SOLVE */
+function add(v){display.value+=v}
+function clearD(){display.value=''}
+function backspace(){display.value=display.value.slice(0,-1)}
 function solve(){
 try{
-let text = document.getElementById("display").value;
-let clean = text.replace(/[a-zA-Z= ]/g,'');
-let result = Function("return "+clean)();
-
-document.getElementById("display").value = result;
-
-/* HISTORY SAVE */
-let record = text + " = " + result;
-history.unshift(record);
-
-localStorage.setItem("history", JSON.stringify(history));
+let r=eval(display.value);
+history.unshift(display.value+'='+r);
+localStorage.setItem('history',JSON.stringify(history));
+display.value=r;
+xp++;
+document.getElementById('xp').innerText=xp;
 showHistory();
-
-}catch{
-alert("Invalid Input ❌");
+}catch{alert('Invalid Input');}
 }
-}
-
-/* SHOW HISTORY */
 function showHistory(){
-let box = document.getElementById("historyBox");
-box.innerHTML = "<b>📜 History</b><br>";
-
-history.forEach(h=>{
-box.innerHTML += "<div>"+h+"</div>";
-});
+document.getElementById('history').innerHTML=history.join('<br>');
 }
-
-/* CLEAR HISTORY */
 function clearHistory(){
-history = [];
-localStorage.removeItem("history");
-showHistory();
+history=[];localStorage.removeItem('history');showHistory();
 }
-
-/* LOAD */
-window.onload = function(){
-showHistory();
+function check(){
+if(ans.value=='6'){alert('Correct 🏆');}
+else{alert('Try Again');}
 }
-
+showHistory();
 </script>
-
 </body>
 </html>
