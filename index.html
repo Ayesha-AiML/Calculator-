@@ -1,102 +1,165 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ayesha Physics Master Pro V2</title>
-<style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white}
-.header{text-align:center;padding:15px;font-size:32px;font-weight:bold}
-.card{background:#111827;margin:10px;padding:12px;border-radius:12px}
-input{width:95%;padding:10px}
-button{padding:8px;margin:3px;border-radius:8px;border:none}
-</style>
-</head>
-<body>
-<div class="header">✨ AYESHA ✨<br><small>Physics Master Pro V2</small></div>
-
-<div class="card">
-<h3>📊 Dashboard</h3>
-XP: <span id="xp">0</span> |
-Level: <span id="level">Beginner</span> |
-🔥 Streak: <span id="streak">0</span>
-</div>
-
-<div class="card">
-<h3>🧮 Calculator</h3>
-<input id="display">
-<br>
-<button onclick="add('7')">7</button>
-<button onclick="add('8')">8</button>
-<button onclick="add('9')">9</button>
-<button onclick="add('/')">÷</button><br>
-<button onclick="add('4')">4</button>
-<button onclick="add('5')">5</button>
-<button onclick="add('6')">6</button>
-<button onclick="add('*')">×</button><br>
-<button onclick="add('1')">1</button>
-<button onclick="add('2')">2</button>
-<button onclick="add('3')">3</button>
-<button onclick="add('-')">-</button><br>
-<button onclick="add('0')">0</button>
-<button onclick="add('.')">.</button>
-<button onclick="solve()">=</button>
-<button onclick="add('+')">+</button><br>
-<button onclick="add('Math.sin(')">sin</button>
-<button onclick="add('Math.cos(')">cos</button>
-<button onclick="add('Math.tan(')">tan</button>
-<button onclick="add('Math.PI')">π</button>
-<button onclick="backspace()">⌫</button>
-<button onclick="clearD()">AC</button>
-</div>
-
-<div class="card">
-<h3>⚛ Physics Formula Hub</h3>
-<p>F=ma | V=IR | P=VI | v=u+at | KE=½mv² | PE=mgh | E=hf | E=mc²</p>
-</div>
-
-<div class="card">
-<h3>🎯 Daily Challenge</h3>
-<p>Find Force if m=2kg and a=3m/s²</p>
-<input id="ans">
-<button onclick="check()">Submit</button>
-</div>
-
-<div class="card">
-<h3>📜 History</h3>
-<div id="history"></div>
-<button onclick="clearHistory()">Clear History</button>
-</div>
-
 <script>
-let history=JSON.parse(localStorage.getItem('history')||'[]');
-let xp=0;
 
-function add(v){display.value+=v}
-function clearD(){display.value=''}
-function backspace(){display.value=display.value.slice(0,-1)}
+let history = JSON.parse(localStorage.getItem('history') || '[]');
+
+let xp = parseInt(localStorage.getItem('xp')) || 0;
+let streak = parseInt(localStorage.getItem('streak')) || 0;
+
+/* Challenges */
+let challenges = [
+
+{q:"Find Force if m=2kg and a=3m/s²",a:"6"},
+{q:"Find Speed if d=20m and t=4s",a:"5"},
+{q:"Find Power if W=100J and t=10s",a:"10"},
+{q:"Find Charge if I=2A and t=5s",a:"10"},
+{q:"Find Frequency if T=0.5s",a:"2"},
+{q:"Find Momentum if m=5kg and v=2m/s",a:"10"},
+{q:"Find Work if F=10N and d=5m",a:"50"}
+
+];
+
+let currentAnswer = "";
+
+/* Calculator */
+
+function add(v){
+display.value += v;
+}
+
+function clearD(){
+display.value = '';
+}
+
+function backspace(){
+display.value = display.value.slice(0,-1);
+}
+
+/* Level System */
+
+function updateLevel(){
+
+document.getElementById('xp').innerText = xp;
+document.getElementById('streak').innerText = streak;
+
+let level = "Beginner";
+
+if(xp >= 25) level = "Explorer";
+if(xp >= 50) level = "Scientist";
+if(xp >= 100) level = "Physics Master";
+if(xp >= 200) level = "Einstein";
+
+document.getElementById('level').innerText = level;
+
+localStorage.setItem('xp',xp);
+localStorage.setItem('streak',streak);
+
+}
+
+/* Solve */
+
 function solve(){
+
 try{
-let r=eval(display.value);
-history.unshift(display.value+'='+r);
-localStorage.setItem('history',JSON.stringify(history));
-display.value=r;
+
+let r = eval(display.value);
+
+history.unshift(display.value + ' = ' + r);
+
+localStorage.setItem(
+'history',
+JSON.stringify(history)
+);
+
+display.value = r;
+
 xp++;
-document.getElementById('xp').innerText=xp;
+
+updateLevel();
+
 showHistory();
-}catch{alert('Invalid Input');}
+
+}catch{
+
+alert('Invalid Input ❌');
+
 }
+
+}
+
+/* History */
+
 function showHistory(){
-document.getElementById('history').innerHTML=history.join('<br>');
+
+document.getElementById('history').innerHTML =
+history.join('<br>');
+
 }
+
 function clearHistory(){
-history=[];localStorage.removeItem('history');showHistory();
-}
-function check(){
-if(ans.value=='6'){alert('Correct 🏆');}
-else{alert('Try Again');}
-}
+
+history = [];
+
+localStorage.removeItem('history');
+
 showHistory();
+
+}
+
+/* Random Challenge */
+
+function loadChallenge(){
+
+let random =
+challenges[Math.floor(Math.random()*challenges.length)];
+
+currentAnswer = random.a;
+
+document.querySelector(".card:nth-of-type(4) p").innerHTML =
+random.q;
+
+document.getElementById("ans").value = "";
+
+}
+
+/* Check Answer */
+
+function check(){
+
+let user =
+document.getElementById("ans").value.trim();
+
+if(user === currentAnswer){
+
+xp += 10;
+
+streak++;
+
+updateLevel();
+
+alert(
+"Correct 🎉\\n+10 XP\\n🔥 Streak Increased"
+);
+
+loadChallenge();
+
+}else{
+
+alert("Wrong ❌ Try Again");
+
+}
+
+}
+
+/* Load */
+
+window.onload = function(){
+
+showHistory();
+
+updateLevel();
+
+loadChallenge();
+
+}
+
 </script>
-</body>
-</html>
