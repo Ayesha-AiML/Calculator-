@@ -1,3 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Calculator + Daily Challenge</title>
+
+<style>
+body {
+font-family: Arial;
+background: #111;
+color: white;
+text-align: center;
+transition: 0.3s;
+}
+
+.light {
+background: #f2f2f2;
+color: black;
+}
+
+.card {
+background: #222;
+padding: 15px;
+margin: 10px;
+border-radius: 10px;
+}
+
+.light .card {
+background: white;
+}
+
+button {
+padding: 10px;
+margin: 5px;
+cursor: pointer;
+}
+
+input {
+padding: 10px;
+width: 80%;
+}
+
+.calculator {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 5px;
+margin-top: 10px;
+}
+
+.calc-display {
+width: 90%;
+padding: 10px;
+font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="toggleTheme()">🌗 Theme</button>
+
+<!-- DASHBOARD -->
 <div class="card">
 <h3>📊 Dashboard</h3>
 XP: <span id="xp">0</span> |
@@ -5,180 +66,196 @@ Level: <span id="level">Beginner</span> |
 🔥 Streak: <span id="streak">0</span>
 </div>
 
+<!-- DAILY CHALLENGE -->
 <div class="card">
 <h3>🎯 Daily Challenge</h3>
-<p id="challengeText">Loading Challenge...</p>
+<p id="challengeText">Loading...</p>
+
+<p>⏱ Time Left: <span id="timer">60</span> sec</p>
+
 <input id="ans" placeholder="Answer">
 <button onclick="check()">Submit</button>
 </div>
 
+<!-- CALCULATOR -->
+<div class="card">
+<h3>🧮 Calculator</h3>
+
+<input id="display" class="calc-display" disabled>
+
+<div class="calculator">
+<button onclick="press('7')">7</button>
+<button onclick="press('8')">8</button>
+<button onclick="press('9')">9</button>
+<button onclick="press('/')">/</button>
+
+<button onclick="press('4')">4</button>
+<button onclick="press('5')">5</button>
+<button onclick="press('6')">6</button>
+<button onclick="press('*')">*</button>
+
+<button onclick="press('1')">1</button>
+<button onclick="press('2')">2</button>
+<button onclick="press('3')">3</button>
+<button onclick="press('-')">-</button>
+
+<button onclick="press('0')">0</button>
+<button onclick="press('.')">.</button>
+<button onclick="calc()">=</button>
+<button onclick="press('+')">+</button>
+
+<button onclick="backspace()">⌫</button>
+<button onclick="clearDisplay()">C</button>
+</div>
+</div>
+
+<!-- HISTORY -->
 <div class="card">
 <h3>📜 History</h3>
 <div id="history"></div>
 <button onclick="clearHistory()">Clear History</button>
 </div>
+
 <script>
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+let lastDay = localStorage.getItem("lastDay") || "";
+let solvedToday = localStorage.getItem("solvedToday") || "no";
 
-let history = JSON.parse(localStorage.getItem('history') || '[]');
+let history = JSON.parse(localStorage.getItem("history") || "[]");
 
-let xp = parseInt(localStorage.getItem('xp')) || 0;
-let streak = parseInt(localStorage.getItem('streak')) || 0;
+/* 100 CHALLENGES */
+let challenges = Array.from({length: 100}, (_, i) => {
+return {
+q: `Find value of ${i+1} + ${i+2}`,
+a: (i+1 + i+2).toString()
+};
+});
 
-/* Challenges */
-let challenges = [
+let todayIndex = new Date().getDate() % 100;
+let current = challenges[todayIndex];
 
-{q:"Find Force if m=2kg and a=3m/s²",a:"6"},
-{q:"Find Speed if d=20m and t=4s",a:"5"},
-{q:"Find Power if W=100J and t=10s",a:"10"},
-{q:"Find Charge if I=2A and t=5s",a:"10"},
-{q:"Find Frequency if T=0.5s",a:"2"},
-{q:"Find Momentum if m=5kg and v=2m/s",a:"10"},
-{q:"Find Work if F=10N and d=5m",a:"50"}
+document.getElementById("challengeText").innerText = current.q;
 
-];
+/* TIMER */
+let timeLeft = 60;
+let timerInterval;
 
-let currentAnswer = "";
+function startTimer() {
+clearInterval(timerInterval);
+timeLeft = 60;
+document.getElementById("timer").innerText = timeLeft;
 
-/* Calculator */
+timerInterval = setInterval(() => {
+timeLeft--;
+document.getElementById("timer").innerText = timeLeft;
 
-function add(v){
-display.value += v;
+if (timeLeft <= 0) {
+clearInterval(timerInterval);
+streak = 0;
+localStorage.setItem("streak", streak);
+alert("⏰ Time Over!");
+updateUI();
+}
+}, 1000);
 }
 
-function clearD(){
-display.value = '';
+startTimer();
+
+/* DAILY RESET */
+let today = new Date().toDateString();
+if (lastDay !== today) {
+localStorage.setItem("solvedToday", "no");
+localStorage.setItem("lastDay", today);
 }
 
-function backspace(){
-display.value = display.value.slice(0,-1);
+/* CHECK ANSWER */
+function check() {
+if (solvedToday === "yes") {
+alert("Aaj ka challenge already done!");
+return;
 }
 
-/* Level System */
+let userAns = document.getElementById("ans").value;
 
-function updateLevel(){
+clearInterval(timerInterval);
 
-document.getElementById('xp').innerText = xp;
-document.getElementById('streak').innerText = streak;
-
-let level = "Beginner";
-
-if(xp >= 25) level = "Explorer";
-if(xp >= 50) level = "Scientist";
-if(xp >= 100) level = "Physics Master";
-if(xp >= 200) level = "Einstein";
-
-document.getElementById('level').innerText = level;
-
-localStorage.setItem('xp',xp);
-localStorage.setItem('streak',streak);
-
-}
-
-/* Solve */
-
-function solve(){
-
-try{
-
-let r = eval(display.value);
-
-history.unshift(display.value + ' = ' + r);
-
-localStorage.setItem(
-'history',
-JSON.stringify(history)
-);
-
-display.value = r;
-
-xp++;
-
-updateLevel();
-
-showHistory();
-
-}catch{
-
-alert('Invalid Input ❌');
-
-}
-
-}
-
-/* History */
-
-function showHistory(){
-
-document.getElementById('history').innerHTML =
-history.join('<br>');
-
-}
-
-function clearHistory(){
-
-history = [];
-
-localStorage.removeItem('history');
-
-showHistory();
-
-}
-
-/* Random Challenge */
-
-function loadChallenge(){
-
-let random =
-challenges[Math.floor(Math.random()*challenges.length)];
-
-currentAnswer = random.a;
-
-document.getElementById("challengeText").innerHTML =
-random.q;
-
-document.getElementById("ans").value = "";
-
-}
-
-/* Check Answer */
-
-function check(){
-
-let user =
-document.getElementById("ans").value.trim();
-
-if(user === currentAnswer){
-
+if (userAns === current.a) {
 xp += 10;
-
-streak++;
-
-updateLevel();
-
-alert(
-"Correct 🎉\\n+10 XP\\n🔥 Streak Increased"
-);
-
-loadChallenge();
-
-}else{
-
-alert("Wrong ❌ Try Again");
-
+streak += 1;
+solvedToday = "yes";
+alert("Correct! +10 XP");
+} else {
+streak = 0;
+alert("Wrong answer!");
 }
 
+localStorage.setItem("xp", xp);
+localStorage.setItem("streak", streak);
+localStorage.setItem("solvedToday", solvedToday);
+
+updateUI();
 }
 
-/* Load */
+/* CALCULATOR */
+let display = document.getElementById("display");
 
-window.onload = function(){
-
-showHistory();
-
-updateLevel();
-
-loadChallenge();
-
+function press(val) {
+display.value += val;
 }
 
+function calc() {
+try {
+let result = eval(display.value);
+history.push(display.value + " = " + result);
+localStorage.setItem("history", JSON.stringify(history));
+display.value = result;
+updateHistory();
+} catch {
+alert("Invalid Input");
+}
+}
+
+function clearDisplay() {
+display.value = "";
+}
+
+function backspace() {
+display.value = display.value.slice(0, -1);
+}
+
+/* HISTORY */
+function updateHistory() {
+document.getElementById("history").innerHTML =
+history.map(h => `<p>${h}</p>`).join("");
+}
+
+function clearHistory() {
+history = [];
+localStorage.setItem("history", JSON.stringify(history));
+updateHistory();
+}
+
+/* THEME */
+function toggleTheme() {
+document.body.classList.toggle("light");
+}
+
+/* UI UPDATE */
+function updateUI() {
+document.getElementById("xp").innerText = xp;
+
+let level =
+xp < 50 ? "Beginner" :
+xp < 150 ? "Intermediate" : "Pro";
+
+document.getElementById("level").innerText = level;
+document.getElementById("streak").innerText = streak;
+}
+
+updateUI();
+updateHistory();
 </script>
+
+</body>
+</html>
