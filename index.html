@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Calculator + Daily Challenge</title>
+<title>Smart App</title>
 
 <style>
 body {
@@ -69,11 +69,16 @@ Level: <span id="level">Beginner</span> |
 <!-- DAILY CHALLENGE -->
 <div class="card">
 <h3>🎯 Daily Challenge</h3>
+
 <p id="challengeText">Loading...</p>
 
-<p>⏱ Time Left: <span id="timer">60</span> sec</p>
+<p>⏱ Time Left: <span id="timer">0</span> sec</p>
+
+<p>⏳ Next Challenge In: <span id="nextChallenge">...</span></p>
 
 <input id="ans" placeholder="Answer">
+
+<button onclick="startChallenge()">Start Challenge</button>
 <button onclick="check()">Submit</button>
 </div>
 
@@ -124,6 +129,8 @@ let solvedToday = localStorage.getItem("solvedToday") || "no";
 
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 
+let display = document.getElementById("display");
+
 /* 100 CHALLENGES */
 let challenges = Array.from({length: 100}, (_, i) => {
 return {
@@ -137,10 +144,33 @@ let current = challenges[todayIndex];
 
 document.getElementById("challengeText").innerText = current.q;
 
-/* TIMER */
+/* DAILY RESET */
+let today = new Date().toDateString();
+if (lastDay !== today) {
+localStorage.setItem("solvedToday", "no");
+localStorage.setItem("lastDay", today);
+}
+
+/* START CONTROL */
+let challengeStarted = false;
 let timeLeft = 60;
 let timerInterval;
 
+/* START CHALLENGE */
+function startChallenge() {
+if (solvedToday === "yes") {
+alert("Aaj ka challenge complete ho chuka!");
+return;
+}
+
+if (challengeStarted) return;
+
+challengeStarted = true;
+startTimer();
+alert("Challenge Started!");
+}
+
+/* TIMER */
 function startTimer() {
 clearInterval(timerInterval);
 timeLeft = 60;
@@ -160,34 +190,30 @@ updateUI();
 }, 1000);
 }
 
-startTimer();
-
-/* DAILY RESET */
-let today = new Date().toDateString();
-if (lastDay !== today) {
-localStorage.setItem("solvedToday", "no");
-localStorage.setItem("lastDay", today);
-}
-
 /* CHECK ANSWER */
 function check() {
 if (solvedToday === "yes") {
-alert("Aaj ka challenge already done!");
+alert("Already done!");
 return;
 }
 
-let userAns = document.getElementById("ans").value;
+if (!challengeStarted) {
+alert("Pehle Start Challenge dabao!");
+return;
+}
 
 clearInterval(timerInterval);
+
+let userAns = document.getElementById("ans").value;
 
 if (userAns === current.a) {
 xp += 10;
 streak += 1;
 solvedToday = "yes";
-alert("Correct! +10 XP");
+alert("Correct +10 XP");
 } else {
 streak = 0;
-alert("Wrong answer!");
+alert("Wrong Answer");
 }
 
 localStorage.setItem("xp", xp);
@@ -197,52 +223,70 @@ localStorage.setItem("solvedToday", solvedToday);
 updateUI();
 }
 
+/* NEXT CHALLENGE TIMER */
+function getNextResetTime() {
+let next = new Date();
+next.setDate(next.getDate() + 1);
+next.setHours(0,0,0,0);
+return next;
+}
+
+function updateNextTimer() {
+setInterval(() => {
+let now = new Date();
+let diff = getNextResetTime() - now;
+
+let h = Math.floor(diff / 3600000);
+let m = Math.floor((diff % 3600000) / 60000);
+let s = Math.floor((diff % 60000) / 1000);
+
+document.getElementById("nextChallenge").innerText =
+`${h}h ${m}m ${s}s`;
+}, 1000);
+}
+
+updateNextTimer();
+
 /* CALCULATOR */
-let display = document.getElementById("display");
+function press(val){ display.value += val; }
 
-function press(val) {
-display.value += val;
-}
-
-function calc() {
-try {
-let result = eval(display.value);
-history.push(display.value + " = " + result);
+function calc(){
+try{
+let r = eval(display.value);
+history.push(display.value + " = " + r);
 localStorage.setItem("history", JSON.stringify(history));
-display.value = result;
+display.value = r;
 updateHistory();
-} catch {
-alert("Invalid Input");
+}catch{
+alert("Invalid");
 }
 }
 
-function clearDisplay() {
-display.value = "";
-}
+function clearDisplay(){ display.value=""; }
 
-function backspace() {
-display.value = display.value.slice(0, -1);
+function backspace(){
+display.value = display.value.slice(0,-1);
 }
 
 /* HISTORY */
-function updateHistory() {
+function updateHistory(){
 document.getElementById("history").innerHTML =
 history.map(h => `<p>${h}</p>`).join("");
 }
 
-function clearHistory() {
+function clearHistory(){
 history = [];
 localStorage.setItem("history", JSON.stringify(history));
 updateHistory();
 }
 
 /* THEME */
-function toggleTheme() {
+function toggleTheme(){
 document.body.classList.toggle("light");
 }
 
-/* UI UPDATE */
-function updateUI() {
+/* UI */
+function updateUI(){
 document.getElementById("xp").innerText = xp;
 
 let level =
