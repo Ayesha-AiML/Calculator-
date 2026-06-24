@@ -1,3 +1,22 @@
+<div class="card">
+<h3>📊 Dashboard</h3>
+XP: <span id="xp">0</span> |
+Level: <span id="level">Beginner</span> |
+🔥 Streak: <span id="streak">0</span>
+</div>
+
+<div class="card">
+<h3>🎯 Daily Challenge</h3>
+<p id="challengeText">Loading Challenge...</p>
+<input id="ans" placeholder="Answer">
+<button onclick="check()">Submit</button>
+</div>
+
+<div class="card">
+<h3>📜 History</h3>
+<div id="history"></div>
+<button onclick="clearHistory()">Clear History</button>
+</div>
 <script>
 
 let history = JSON.parse(localStorage.getItem('history') || '[]');
