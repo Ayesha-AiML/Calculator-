@@ -51,10 +51,31 @@ width: 90%;
 padding: 10px;
 font-size: 20px;
 }
+
+/* AYESHA TITLE */
+@keyframes glow {
+0% { text-shadow: 0 0 5px #ff4ecd; }
+100% { text-shadow: 0 0 25px #00d4ff; }
+}
 </style>
 </head>
 
 <body>
+
+<!-- AYESHA HEADER -->
+<div style="margin-top:25px;">
+<h1 style="
+font-size:45px;
+background: linear-gradient(90deg,#ff4ecd,#7c4dff,#00d4ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+letter-spacing:3px;
+animation: glow 2s infinite alternate;
+">
+Ayesha
+</h1>
+<p style="opacity:0.7;">Focus • Learn • Level Up</p>
+</div>
 
 <button onclick="toggleTheme()">🌗 Theme</button>
 
@@ -66,9 +87,9 @@ Level: <span id="level">Beginner</span> |
 🔥 Streak: <span id="streak">0</span>
 </div>
 
-<!-- DAILY CHALLENGE -->
+<!-- DAILY STYLE CHALLENGE (NOW INFINITE) -->
 <div class="card">
-<h3>🎯 Daily Challenge</h3>
+<h3>🎯 Challenge</h3>
 
 <p id="challengeText">Loading...</p>
 
@@ -76,7 +97,7 @@ Level: <span id="level">Beginner</span> |
 
 <input id="ans" placeholder="Answer">
 
-<button onclick="startChallenge()">Start Challenge</button>
+<button onclick="startChallenge()">Start</button>
 <button onclick="check()">Submit</button>
 </div>
 
@@ -122,15 +143,11 @@ Level: <span id="level">Beginner</span> |
 <script>
 let xp = parseInt(localStorage.getItem("xp")) || 0;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
-let lastDay = localStorage.getItem("lastDay") || "";
-let solvedToday = localStorage.getItem("solvedToday") || "no";
-let startDayCount = parseInt(localStorage.getItem("startDayCount")) || 0;
-
 let history = JSON.parse(localStorage.getItem("history") || "[]");
 
-let display = document.getElementById("display");
+let challengeIndex = parseInt(localStorage.getItem("challengeIndex")) || 0;
 
-/* ---------------- 100 CHALLENGES ---------------- */
+/* 100 CHALLENGES */
 let challenges = Array.from({length: 100}, (_, i) => {
 return {
 q: `Find value of ${i+1} + ${i+2}`,
@@ -138,57 +155,26 @@ a: (i+1 + i+2).toString()
 };
 });
 
-let todayIndex = new Date().getDate() % 100;
-let current = challenges[todayIndex];
+/* LOAD CHALLENGE */
+let current;
 
+function loadChallenge() {
+current = challenges[challengeIndex];
 document.getElementById("challengeText").innerText = current.q;
-
-/* ---------------- DAILY SYSTEM FIX ---------------- */
-let today = new Date().toDateString();
-
-if (lastDay !== today) {
-
-localStorage.setItem("solvedToday", "no");
-
-/* streak logic */
-if (lastDay !== "") {
-let prev = new Date(lastDay);
-let now = new Date(today);
-
-let diffDays = Math.floor((now - prev) / (1000*60*60*24));
-
-if (diffDays === 1) {
-streak += 1;
-startDayCount += 1;
-} else if (diffDays > 1) {
-streak = 0;
-startDayCount = 1;
-}
-} else {
-startDayCount = 1;
 }
 
-localStorage.setItem("lastDay", today);
-localStorage.setItem("streak", streak);
-localStorage.setItem("startDayCount", startDayCount);
-}
+loadChallenge();
 
-/* ---------------- TIMER CONTROL ---------------- */
+/* TIMER */
 let challengeStarted = false;
 let timeLeft = 60;
 let timerInterval;
 
 function startChallenge() {
-if (solvedToday === "yes") {
-alert("Aaj ka challenge already complete!");
-return;
-}
-
 if (challengeStarted) return;
 
 challengeStarted = true;
 startTimer();
-alert("Challenge Started!");
 }
 
 function startTimer() {
@@ -210,15 +196,10 @@ updateUI();
 }, 1000);
 }
 
-/* ---------------- CHECK ANSWER ---------------- */
+/* CHECK ANSWER → NEXT CHALLENGE */
 function check() {
-if (solvedToday === "yes") {
-alert("Already done!");
-return;
-}
-
 if (!challengeStarted) {
-alert("Pehle Start Challenge dabao!");
+alert("Start challenge first!");
 return;
 }
 
@@ -228,8 +209,16 @@ let userAns = document.getElementById("ans").value;
 
 if (userAns === current.a) {
 xp += 10;
-solvedToday = "yes";
-alert("Correct +10 XP");
+streak += 1;
+
+challengeIndex++;
+localStorage.setItem("challengeIndex", challengeIndex);
+
+alert("Correct +10 XP → Next Challenge");
+
+loadChallenge();
+document.getElementById("ans").value = "";
+challengeStarted = false;
 } else {
 streak = 0;
 alert("Wrong Answer");
@@ -237,61 +226,61 @@ alert("Wrong Answer");
 
 localStorage.setItem("xp", xp);
 localStorage.setItem("streak", streak);
-localStorage.setItem("solvedToday", solvedToday);
 
 updateUI();
 }
 
-/* ---------------- CALCULATOR ---------------- */
-function press(val){ display.value += val; }
+/* CALCULATOR */
+function press(val){ document.getElementById("display").value += val; }
 
 function calc(){
 try{
-let r = eval(display.value);
-history.push(display.value + " = " + r);
+let r = eval(document.getElementById("display").value);
+history.push(document.getElementById("display").value + " = " + r);
 localStorage.setItem("history", JSON.stringify(history));
-display.value = r;
+document.getElementById("display").value = r;
 updateHistory();
 }catch{
 alert("Invalid");
 }
 }
 
-function clearDisplay(){ display.value=""; }
-
-function backspace(){
-display.value = display.value.slice(0,-1);
+function clearDisplay(){
+document.getElementById("display").value="";
 }
 
-/* ---------------- HISTORY ---------------- */
+function backspace(){
+let d=document.getElementById("display");
+d.value=d.value.slice(0,-1);
+}
+
+/* HISTORY */
 function updateHistory(){
 document.getElementById("history").innerHTML =
 history.map(h => `<p>${h}</p>`).join("");
 }
 
 function clearHistory(){
-history = [];
+history=[];
 localStorage.setItem("history", JSON.stringify(history));
 updateHistory();
 }
 
-/* ---------------- THEME ---------------- */
+/* THEME */
 function toggleTheme(){
 document.body.classList.toggle("light");
 }
 
-/* ---------------- LEVEL SYSTEM (10 DAY PROGRESSION) ---------------- */
+/* UI */
 function updateUI(){
-
 document.getElementById("xp").innerText = xp;
 document.getElementById("streak").innerText = streak;
 
-let level = "Beginner";
-
-if (startDayCount >= 30) level = "Master";
-else if (startDayCount >= 20) level = "Pro";
-else if (startDayCount >= 10) level = "Advanced";
-else if (startDayCount >= 5) level = "Intermediate";
+let level =
+streak < 5 ? "Beginner" :
+streak < 10 ? "Intermediate" :
+streak < 20 ? "Advanced" :
+streak < 30 ? "Pro" : "Master";
 
 document.getElementById("level").innerText = level;
 }
